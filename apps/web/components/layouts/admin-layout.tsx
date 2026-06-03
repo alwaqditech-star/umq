@@ -1,0 +1,89 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, Moon, Sun, Bell } from "lucide-react";
+import { Sidebar } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import { localePath } from "@/lib/i18n/routes";
+import { useUiStore, type Locale } from "@/stores/ui-store";
+import { PageTransition } from "@/components/motion/page-transition";
+
+export function AdminLayout({
+  locale,
+  children,
+}: {
+  locale: Locale;
+  children: React.ReactNode;
+}) {
+  const dict = getDictionary(locale);
+  const pathname = usePathname();
+  const { toggleAdminSidebar, toggleTheme, theme } = useUiStore();
+
+  const segment = pathname.split("/").filter(Boolean).pop();
+  const titleMap: Record<string, string> = {
+    admin: dict.admin.dashboard,
+    users: dict.admin.users,
+    roles: dict.admin.roles,
+    services: dict.admin.services,
+    projects: dict.admin.projects,
+    blog: dict.admin.blog,
+    jobs: dict.admin.jobs,
+    applications: dict.admin.applications,
+  };
+  const pageTitle = titleMap[segment ?? "admin"] ?? dict.admin.dashboard;
+
+  return (
+    <div className="flex min-h-screen bg-background">
+      <Sidebar locale={locale} />
+      <div className="flex min-w-0 flex-1 flex-col lg:ps-64">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-border bg-surface/90 px-4 backdrop-blur-md sm:px-6">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              className="rounded-xl p-2 hover:bg-accent/10 lg:hidden"
+              onClick={toggleAdminSidebar}
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <div>
+              <p className="text-xs text-foreground-muted">{dict.admin.welcome}</p>
+              <h1 className="text-lg font-semibold text-foreground">{pageTitle}</h1>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="rounded-xl p-2.5 text-foreground-muted hover:bg-accent/10"
+              aria-label="Notifications"
+            >
+              <Bell className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="rounded-xl p-2.5 text-foreground-muted hover:bg-accent/10"
+              aria-label="Toggle theme"
+            >
+              {theme === "light" ? (
+                <Moon className="h-5 w-5" />
+              ) : (
+                <Sun className="h-5 w-5" />
+              )}
+            </button>
+            <Link href={localePath(locale, "")}>
+              <Button variant="ghost" size="sm">
+                {dict.nav.home}
+              </Button>
+            </Link>
+          </div>
+        </header>
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+          <PageTransition>{children}</PageTransition>
+        </main>
+      </div>
+    </div>
+  );
+}

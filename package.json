@@ -1,0 +1,24 @@
+{
+  "name": "umq-platform",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --filter=@umq/web --filter=@umq/api --parallel",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
+    "check-types": "turbo run check-types",
+    "db:generate": "turbo run db:generate --filter=@umq/database",
+    "db:migrate": "turbo run db:migrate --filter=@umq/database",
+    "db:seed": "turbo run db:seed --filter=@umq/database"
+  },
+  "devDependencies": {
+    "prettier": "^3.7.4",
+    "turbo": "^2.9.16",
+    "typescript": "5.9.2"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
+  }
+}

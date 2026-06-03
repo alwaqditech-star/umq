@@ -1,0 +1,40 @@
+{
+  "name": "@umq/web",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
+    "dev": "next dev --port 3000",
+    "dev:clean": "pnpm clean && next dev --port 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@umq/shared": "workspace:*",
+    "axios": "^1.16.1",
+    "framer-motion": "^12.40.0",
+    "lucide-react": "^1.17.0",
+    "next": "^15.5.0",
+    "next-themes": "^0.4.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.77.0",
+    "zod": "^4.4.3",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@umq/eslint-config": "workspace:*",
+    "@umq/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@tailwindcss/postcss": "^4.3.0",
+    "eslint": "^9.39.1",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.0",
+    "typescript": "5.9.2"
+  }
+}

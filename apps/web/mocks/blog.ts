@@ -1,0 +1,40 @@
+import type { BlogPost } from "@/lib/api/types";
+
+export const mockBlogPosts: BlogPost[] = [
+  {
+    id: "1",
+    slug: "ai-enterprise-2026",
+    titleAr: "الذكاء الاصطناعي في المؤسسات السعودية 2026",
+    titleEn: "Enterprise AI in Saudi Arabia 2026",
+    excerptAr: "كيف تبني المؤسسات حوكمة ذكاء اصطناعي قابلة للتوسع.",
+    excerptEn: "How organizations build scalable AI governance.",
+    category: "AI",
+    author: "فريق عُمْق",
+    publishedAt: "2026-02-15",
+    readingTime: 8,
+  },
+  {
+    id: "2",
+    slug: "cloud-cost-optimization",
+    titleAr: "تحسين تكاليف السحابة دون التضحية بالأداء",
+    titleEn: "Cloud Cost Optimization Without Sacrificing Performance",
+    excerptAr: "استراتيجيات FinOps عملية للفرق التقنية.",
+    excerptEn: "Practical FinOps strategies for engineering teams.",
+    category: "Cloud",
+    author: "سارة العتيبي",
+    publishedAt: "2026-01-28",
+    readingTime: 6,
+  },
+  {
+    id: "3",
+    slug: "zero-trust-basics",
+    titleAr: "أساسيات Zero Trust للشركات الناشئة",
+    titleEn: "Zero Trust Basics for Growing Companies",
+    excerptAr: "خطوات تدريجية لبناء أمان حديث.",
+    excerptEn: "Incremental steps to modern security posture.",
+    category: "Security",
+    author: "خالد المنصور",
+    publishedAt: "2025-12-10",
+    readingTime: 5,
+  },
+];
