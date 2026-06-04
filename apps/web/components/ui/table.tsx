@@ -16,11 +16,7 @@ export function Table({
   );
 }
 
-export function TableHeader({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function TableHeader({ children }: { children: React.ReactNode }) {
   return (
     <thead className="border-b border-border bg-table-header text-start">
       {children}
@@ -29,7 +25,9 @@ export function TableHeader({
 }
 
 export function TableBody({ children }: { children: React.ReactNode }) {
-  return <tbody className="divide-y divide-border bg-surface">{children}</tbody>;
+  return (
+    <tbody className="divide-y divide-border bg-surface">{children}</tbody>
+  );
 }
 
 export function TableRow({
@@ -40,12 +38,7 @@ export function TableRow({
   children: React.ReactNode;
 }) {
   return (
-    <tr
-      className={cn(
-        "transition-colors hover:bg-accent/5",
-        className,
-      )}
-    >
+    <tr className={cn("transition-colors hover:bg-accent/5", className)}>
       {children}
     </tr>
   );

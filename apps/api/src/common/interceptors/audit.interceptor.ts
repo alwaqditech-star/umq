@@ -70,7 +70,12 @@ export class AuditInterceptor implements NestInterceptor {
   private safeBody(body?: Record<string, unknown>): object | undefined {
     if (!body) return undefined;
     const clone = { ...body };
-    for (const key of ["password", "currentPassword", "newPassword", "refreshToken"]) {
+    for (const key of [
+      "password",
+      "currentPassword",
+      "newPassword",
+      "refreshToken",
+    ]) {
       if (key in clone) clone[key] = "[redacted]";
     }
     return clone;

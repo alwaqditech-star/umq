@@ -27,13 +27,13 @@ umq-platform/
 
 ## User interfaces (per analysis report)
 
-| Interface | Route group | Audience |
-|-----------|-------------|----------|
-| Public website | `apps/web/app/[locale]/(public)` | Visitors, clients |
-| Auth | `apps/web/app/[locale]/(auth)` | Staff login |
-| Admin dashboard | `apps/web/app/[locale]/admin` | Super Admin, Admin (RBAC) |
-| Editor dashboard | `apps/web/app/[locale]/editor` | Editor (content only) |
-| REST API | `apps/api` (`/api/v1`) | Web app + future integrations |
+| Interface        | Route group                      | Audience                      |
+| ---------------- | -------------------------------- | ----------------------------- |
+| Public website   | `apps/web/app/[locale]/(public)` | Visitors, clients             |
+| Auth             | `apps/web/app/[locale]/(auth)`   | Staff login                   |
+| Admin dashboard  | `apps/web/app/[locale]/admin`    | Super Admin, Admin (RBAC)     |
+| Editor dashboard | `apps/web/app/[locale]/editor`   | Editor (content only)         |
+| REST API         | `apps/api` (`/api/v1`)           | Web app + future integrations |
 
 ### Default roles (seeded)
 
@@ -45,11 +45,11 @@ Staff login is **not linked from the public website** — use `/ar/login` direct
 
 Default users (password from `SEED_ADMIN_PASSWORD`, default `ChangeMe123!`):
 
-| Role | Email |
-|------|-------|
-| super-admin | `admin@umq.sa` |
-| admin | `operations@umq.sa` |
-| editor | `editor@umq.sa` |
+| Role        | Email               |
+| ----------- | ------------------- |
+| super-admin | `admin@umq.sa`      |
+| admin       | `operations@umq.sa` |
+| editor      | `editor@umq.sa`     |
 
 ## Quick start
 
@@ -77,8 +77,8 @@ pnpm dev:web
 
 **One terminal (both at once):** `pnpm dev` or `npm run dev`
 
-- Web: http://localhost:3000/ar  
-- API: http://localhost:4001/api/v1/health (set `API_PORT` in `.env`)  
+- Web: http://localhost:3000/ar
+- API: http://localhost:4001/api/v1/health (set `API_PORT` in `.env`)
 - Check both: `pnpm dev:status`
 
 Set `NEXT_PUBLIC_API_URL` in `.env` to connect the UI to MySQL via NestJS (required; mock mode removed).

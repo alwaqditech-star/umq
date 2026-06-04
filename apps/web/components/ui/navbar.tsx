@@ -32,10 +32,16 @@ export function Navbar({ locale }: { locale: Locale }) {
     (l) => !l.sectionKey || (l.sectionKey === "blog" ? blogEnabled : true),
   );
   const [scrolled, setScrolled] = useState(false);
-  const { theme, toggleTheme, publicMenuOpen, togglePublicMenu, setPublicMenuOpen } =
-    useUiStore();
+  const {
+    theme,
+    toggleTheme,
+    publicMenuOpen,
+    togglePublicMenu,
+    setPublicMenuOpen,
+  } = useUiStore();
   const otherLocale: Locale = locale === "ar" ? "en" : "ar";
-  const switchPath = pathname.replace(`/${locale}`, `/${otherLocale}`) || `/${otherLocale}`;
+  const switchPath =
+    pathname.replace(`/${locale}`, `/${otherLocale}`) || `/${otherLocale}`;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -77,8 +83,7 @@ export function Navbar({ locale }: { locale: Locale }) {
           {navLinks.map(({ key, path }) => {
             const href = localePath(locale, path);
             const active =
-              pathname === href ||
-              (path !== "" && pathname.startsWith(href));
+              pathname === href || (path !== "" && pathname.startsWith(href));
             return (
               <FastNavLink
                 key={key}
@@ -181,8 +186,7 @@ function AnimatePresenceMobileNav({
             {navLinks.map(({ key, path }, i) => {
               const href = localePath(locale, path);
               const active =
-                pathname === href ||
-                (path !== "" && pathname.startsWith(href));
+                pathname === href || (path !== "" && pathname.startsWith(href));
               return (
                 <motion.div
                   key={key}

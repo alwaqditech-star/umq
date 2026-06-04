@@ -2,13 +2,13 @@
 
 ## Brand palette (locked)
 
-| Token | Hex | Usage |
-|-------|-----|--------|
-| Light | `#F4FAFB` | Background |
-| Primary | `#0F244D` | Headings, primary buttons |
-| Accent | `#488695` | CTAs, links, highlights |
-| Secondary | `#2C516E` | Hover, secondary text |
-| Muted | `#9ABFC4` | Borders, soft UI |
+| Token     | Hex       | Usage                     |
+| --------- | --------- | ------------------------- |
+| Light     | `#F4FAFB` | Background                |
+| Primary   | `#0F244D` | Headings, primary buttons |
+| Accent    | `#488695` | CTAs, links, highlights   |
+| Secondary | `#2C516E` | Hover, secondary text     |
+| Muted     | `#9ABFC4` | Borders, soft UI          |
 
 ## Derived tokens
 

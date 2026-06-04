@@ -31,7 +31,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             "placeholder:text-foreground-muted/70",
             "transition-colors duration-200",
             "hover:border-accent/40 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20",
-            error && "border-red-500 focus:border-red-500 focus:ring-red-500/20",
+            error &&
+              "border-red-500 focus:border-red-500 focus:ring-red-500/20",
             className,
           )}
           aria-invalid={!!error}
@@ -41,7 +42,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <p id={`${inputId}-error`} className="text-xs text-red-600" role="alert">
+          <p
+            id={`${inputId}-error`}
+            className="text-xs text-red-600"
+            role="alert"
+          >
             {error}
           </p>
         )}

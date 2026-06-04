@@ -36,7 +36,11 @@ export function ProjectsPageClient({
 
   return (
     <>
-      <PageHeader kicker={p.projectsKicker} title={p.projectsTitle} description={p.projectsDesc} />
+      <PageHeader
+        kicker={p.projectsKicker}
+        title={p.projectsTitle}
+        description={p.projectsDesc}
+      />
       <div className="container-umq py-14 sm:py-20">
         <div className="mb-10 flex flex-wrap gap-2">
           {categories.map((cat) => (
@@ -46,11 +50,7 @@ export function ProjectsPageClient({
               size="sm"
               onClick={() => setCategory(cat)}
             >
-              {cat === "all"
-                ? locale === "ar"
-                  ? "الكل"
-                  : "All"
-                : cat}
+              {cat === "all" ? (locale === "ar" ? "الكل" : "All") : cat}
             </Button>
           ))}
         </div>
@@ -58,11 +58,7 @@ export function ProjectsPageClient({
         <StaggerList className="grid gap-8 sm:grid-cols-2">
           {filtered.map((project) => (
             <StaggerItem key={project.id}>
-              <Card
-                hover
-                elevated
-                className="group h-full overflow-hidden p-0"
-              >
+              <Card hover elevated className="group h-full overflow-hidden p-0">
                 <Link href={localePath(locale, `/projects/${project.slug}`)}>
                   <div
                     className={cn(

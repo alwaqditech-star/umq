@@ -1,7 +1,21 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
-  "globalEnv": ["DATABASE_URL", "NODE_ENV", "API_PORT", "SEED_ADMIN_PASSWORD"],
+  "globalEnv": [
+    "DATABASE_URL",
+    "LEGACY_DATABASE_URL",
+    "NODE_ENV",
+    "API_PORT",
+    "API_INTERNAL_URL",
+    "NEXT_PUBLIC_API_URL",
+    "CORS_ORIGIN",
+    "WEB_ORIGIN",
+    "JWT_SECRET",
+    "SEED_ADMIN_PASSWORD",
+    "AUTH_COOKIE_SECURE",
+    "PUBLIC_API_URL",
+    "UPLOAD_DIR"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

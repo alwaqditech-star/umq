@@ -184,6 +184,9 @@ export interface CrudService<T extends BaseEntity> {
   listAdmin?(): Promise<T[]>;
   getById(id: string): Promise<T | null>;
   create(data: CreateInput<T> | Record<string, unknown>): Promise<T>;
-  update(id: string, data: UpdateInput<T> | Record<string, unknown>): Promise<T>;
+  update(
+    id: string,
+    data: UpdateInput<T> | Record<string, unknown>,
+  ): Promise<T>;
   delete(id: string): Promise<void>;
 }

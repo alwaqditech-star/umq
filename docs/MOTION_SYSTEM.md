@@ -4,15 +4,15 @@ Built on **Framer Motion**.
 
 ## Patterns
 
-| Pattern | Component / utility |
-|---------|---------------------|
+| Pattern        | Component / utility                     |
+| -------------- | --------------------------------------- |
 | Section reveal | `FadeUp`, `StaggerList` / `StaggerItem` |
-| Hero entrance | `motion.div` initial opacity/y |
-| Card hover | `Card` with `hover` + spring `y` |
-| Page headers | `PageHeader` fade-in |
-| Mobile nav | `AnimatePresence` height |
-| FAQ accordion | `AnimatePresence` on contact |
-| Success state | spring scale on contact form |
+| Hero entrance  | `motion.div` initial opacity/y          |
+| Card hover     | `Card` with `hover` + spring `y`        |
+| Page headers   | `PageHeader` fade-in                    |
+| Mobile nav     | `AnimatePresence` height                |
+| FAQ accordion  | `AnimatePresence` on contact            |
+| Success state  | spring scale on contact form            |
 
 ## Principles
 

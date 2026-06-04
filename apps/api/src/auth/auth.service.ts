@@ -56,7 +56,9 @@ export class AuthService {
     });
     if (!user) throw new UnauthorizedException("User not found");
 
-    const permissions = user.role.rolePermissions.map((rp) => rp.permission.slug);
+    const permissions = user.role.rolePermissions.map(
+      (rp) => rp.permission.slug,
+    );
     const isSuperAdmin = user.role.slug === "super-admin";
 
     return {
@@ -106,7 +108,8 @@ export class AuthService {
       permissions: user.permissions,
     };
 
-    const accessExpires = this.config.get<string>("JWT_ACCESS_EXPIRES") ?? "15m";
+    const accessExpires =
+      this.config.get<string>("JWT_ACCESS_EXPIRES") ?? "15m";
     const accessMs = this.parseDurationMs(accessExpires);
     const refreshMs = this.getRefreshDurationMs(rememberMe);
     const accessSeconds = Math.floor(accessMs / 1000);

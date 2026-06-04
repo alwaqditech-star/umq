@@ -52,7 +52,9 @@ export function Dropdown({
           "bg-surface px-4 text-sm transition-colors hover:border-accent/40",
         )}
       >
-        <span className={selected ? "text-foreground" : "text-foreground-muted"}>
+        <span
+          className={selected ? "text-foreground" : "text-foreground-muted"}
+        >
           {selected?.label ?? placeholder}
         </span>
         <ChevronDown
@@ -73,12 +75,17 @@ export function Dropdown({
             className="absolute z-40 mt-1 max-h-60 w-full overflow-auto rounded-xl border border-border bg-surface py-1 shadow-lg"
           >
             {options.map((option) => (
-              <li key={option.value} role="option" aria-selected={value === option.value}>
+              <li
+                key={option.value}
+                role="option"
+                aria-selected={value === option.value}
+              >
                 <button
                   type="button"
                   className={cn(
                     "w-full px-4 py-2.5 text-start text-sm transition-colors hover:bg-accent/10",
-                    value === option.value && "bg-accent/10 font-medium text-nav-active",
+                    value === option.value &&
+                      "bg-accent/10 font-medium text-nav-active",
                   )}
                   onClick={() => {
                     onChange(option.value);

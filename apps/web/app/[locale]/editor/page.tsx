@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FileText, FolderKanban, ImageIcon } from "lucide-react";
 import { api } from "@/lib/api";
-import { filterNavByPermissions, editorNavItems } from "@/lib/editor/nav-config";
+import {
+  filterNavByPermissions,
+  editorNavItems,
+} from "@/lib/editor/nav-config";
 import { localePath } from "@/lib/i18n/routes";
 import { useLocale } from "@/lib/i18n/use-locale";
 import { useAuthStore } from "@/stores/auth-store";

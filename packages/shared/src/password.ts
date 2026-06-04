@@ -11,7 +11,10 @@ export function verifyPassword(password: string, stored: string): boolean {
   if (!salt || !hash) return false;
   try {
     const computed = scryptSync(password, salt, 64).toString("hex");
-    return timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(computed, "hex"));
+    return timingSafeEqual(
+      Buffer.from(hash, "hex"),
+      Buffer.from(computed, "hex"),
+    );
   } catch {
     return false;
   }

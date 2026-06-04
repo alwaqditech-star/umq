@@ -77,7 +77,15 @@ export default function AdminTestimonialsPage() {
       <AdminFormModal
         open={open}
         onClose={() => setOpen(false)}
-        title={editing ? (locale === "ar" ? "تعديل" : "Edit") : locale === "ar" ? "جديد" : "New"}
+        title={
+          editing
+            ? locale === "ar"
+              ? "تعديل"
+              : "Edit"
+            : locale === "ar"
+              ? "جديد"
+              : "New"
+        }
         locale={locale}
         submitLabel={locale === "ar" ? "حفظ" : "Save"}
         fields={[
@@ -85,8 +93,18 @@ export default function AdminTestimonialsPage() {
           { name: "authorEn", label: "Author EN", required: true },
           { name: "companyAr", label: "Company AR" },
           { name: "companyEn", label: "Company EN" },
-          { name: "contentAr", label: "Content AR", type: "textarea", required: true },
-          { name: "contentEn", label: "Content EN", type: "textarea", required: true },
+          {
+            name: "contentAr",
+            label: "Content AR",
+            type: "textarea",
+            required: true,
+          },
+          {
+            name: "contentEn",
+            label: "Content EN",
+            type: "textarea",
+            required: true,
+          },
           {
             name: "status",
             label: "status",
@@ -117,8 +135,7 @@ export default function AdminTestimonialsPage() {
             rating: 5,
             status: values.status,
           };
-          if (editing)
-            await api.cms.testimonials.update(editing.id, payload);
+          if (editing) await api.cms.testimonials.update(editing.id, payload);
           else await api.cms.testimonials.create(payload);
           await reload();
         }}

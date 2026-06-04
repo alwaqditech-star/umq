@@ -25,18 +25,14 @@ export function FastNavLink({
   const startNavigation = useUiStore((s) => s.startNavigation);
   const navPending = useUiStore((s) => s.navPending);
   const isActive =
-    pathname === href ||
-    (matchPrefix && pathname.startsWith(`${href}/`));
+    pathname === href || (matchPrefix && pathname.startsWith(`${href}/`));
 
   return (
     <Link
       href={href}
       prefetch={prefetch}
       aria-current={isActive ? "page" : undefined}
-      className={cn(
-        className,
-        navPending && !isActive && "opacity-80",
-      )}
+      className={cn(className, navPending && !isActive && "opacity-80")}
       onClick={() => {
         if (pathname !== href) {
           startNavigation();

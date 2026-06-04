@@ -6,7 +6,10 @@ import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { api } from "@/lib/api";
 import type { Project } from "@/lib/api/types";
-import { AdminFormModal, contentStatusOptions } from "@/components/admin/form-modal";
+import {
+  AdminFormModal,
+  contentStatusOptions,
+} from "@/components/admin/form-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,21 +26,59 @@ import { useAuthStore } from "@/stores/auth-store";
 
 const projectFields = (locale: "ar" | "en") => [
   { name: "slug", label: "Slug", required: true },
-  { name: "titleAr", label: locale === "ar" ? "العنوان (عربي)" : "Title (AR)", required: true },
-  { name: "titleEn", label: locale === "ar" ? "العنوان (إنجليزي)" : "Title (EN)", required: true },
+  {
+    name: "titleAr",
+    label: locale === "ar" ? "العنوان (عربي)" : "Title (AR)",
+    required: true,
+  },
+  {
+    name: "titleEn",
+    label: locale === "ar" ? "العنوان (إنجليزي)" : "Title (EN)",
+    required: true,
+  },
   { name: "summaryAr", label: "Summary AR", type: "textarea" as const },
   { name: "summaryEn", label: "Summary EN", type: "textarea" as const },
-  { name: "contentAr", label: "Content AR", type: "textarea" as const, rows: 4 },
-  { name: "contentEn", label: "Content EN", type: "textarea" as const, rows: 4 },
+  {
+    name: "contentAr",
+    label: "Content AR",
+    type: "textarea" as const,
+    rows: 4,
+  },
+  {
+    name: "contentEn",
+    label: "Content EN",
+    type: "textarea" as const,
+    rows: 4,
+  },
   { name: "clientName", label: locale === "ar" ? "العميل" : "Client" },
   {
     name: "technologies",
-    label: locale === "ar" ? "التقنيات (مفصولة بفاصلة)" : "Technologies (comma-separated)",
+    label:
+      locale === "ar"
+        ? "التقنيات (مفصولة بفاصلة)"
+        : "Technologies (comma-separated)",
   },
-  { name: "categorySlug", label: locale === "ar" ? "تصنيف (slug)" : "Category slug", placeholder: "enterprise" },
-  { name: "order", label: locale === "ar" ? "الترتيب" : "Order", type: "number" as const },
-  { name: "status", label: locale === "ar" ? "الحالة" : "Status", type: "select" as const, options: contentStatusOptions(locale) },
-  { name: "featured", label: locale === "ar" ? "مميز" : "Featured", type: "checkbox" as const },
+  {
+    name: "categorySlug",
+    label: locale === "ar" ? "تصنيف (slug)" : "Category slug",
+    placeholder: "enterprise",
+  },
+  {
+    name: "order",
+    label: locale === "ar" ? "الترتيب" : "Order",
+    type: "number" as const,
+  },
+  {
+    name: "status",
+    label: locale === "ar" ? "الحالة" : "Status",
+    type: "select" as const,
+    options: contentStatusOptions(locale),
+  },
+  {
+    name: "featured",
+    label: locale === "ar" ? "مميز" : "Featured",
+    type: "checkbox" as const,
+  },
 ];
 
 function toPayload(values: Record<string, string>) {
@@ -79,7 +120,12 @@ export default function AdminProjectsPage() {
         status: editing.status ?? "draft",
         featured: editing.featured ? "true" : "false",
       }
-    : { status: "published", featured: "false", order: "0", categorySlug: "enterprise" };
+    : {
+        status: "published",
+        featured: "false",
+        order: "0",
+        categorySlug: "enterprise",
+      };
 
   if (loading) {
     return <AdminPageSkeleton />;
@@ -92,7 +138,13 @@ export default function AdminProjectsPage() {
           {locale === "ar" ? "المشاريع" : "Projects"}
         </h2>
         {canManage && (
-          <Button size="sm" onClick={() => { setEditing(null); setOpen(true); }}>
+          <Button
+            size="sm"
+            onClick={() => {
+              setEditing(null);
+              setOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4" />
             {locale === "ar" ? "إضافة مشروع" : "Add project"}
           </Button>
@@ -110,16 +162,34 @@ export default function AdminProjectsPage() {
         <TableBody>
           {items.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{localized(locale, row, "titleAr", "titleEn")}</TableCell>
+              <TableCell>
+                {localized(locale, row, "titleAr", "titleEn")}
+              </TableCell>
               <TableCell>{row.clientName}</TableCell>
-              <TableCell><Badge>{row.status}</Badge></TableCell>
+              <TableCell>
+                <Badge>{row.status}</Badge>
+              </TableCell>
               {canManage && (
                 <TableCell>
                   <div className="flex gap-2">
-                    <button type="button" className="rounded-lg p-2 hover:bg-accent/10" onClick={() => { setEditing(row); setOpen(true); }}>
+                    <button
+                      type="button"
+                      className="rounded-lg p-2 hover:bg-accent/10"
+                      onClick={() => {
+                        setEditing(row);
+                        setOpen(true);
+                      }}
+                    >
                       <Pencil className="h-4 w-4" />
                     </button>
-                    <button type="button" className="rounded-lg p-2 text-red-600 hover:bg-red-500/10" onClick={async () => { await api.projects.delete(row.id); await reload(); }}>
+                    <button
+                      type="button"
+                      className="rounded-lg p-2 text-red-600 hover:bg-red-500/10"
+                      onClick={async () => {
+                        await api.projects.delete(row.id);
+                        await reload();
+                      }}
+                    >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>

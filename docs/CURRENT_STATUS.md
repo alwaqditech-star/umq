@@ -4,14 +4,14 @@
 
 ## Snapshot
 
-| Item | Value |
-|------|--------|
-| نوع المنصة | Corporate Website + CMS |
-| الأدوار | `super-admin`, `admin`, `editor` (3 فقط) |
+| Item         | Value                                             |
+| ------------ | ------------------------------------------------- |
+| نوع المنصة   | Corporate Website + CMS                           |
+| الأدوار      | `super-admin`, `admin`, `editor` (3 فقط)          |
 | لوحات التحكم | `/admin` (super-admin, admin), `/editor` (editor) |
-| الدخول العام | **مخفي** — `/ar/login` فقط |
-| Database | MySQL `umq_platform` |
-| Data | NestJS → Prisma → MySQL (no mock) |
+| الدخول العام | **مخفي** — `/ar/login` فقط                        |
+| Database     | MySQL `umq_platform`                              |
+| Data         | NestJS → Prisma → MySQL (no mock)                 |
 
 ## ما تم حذفه
 
@@ -24,11 +24,11 @@
 
 Password: `SEED_ADMIN_PASSWORD` (default `ChangeMe123!`)
 
-| Email | Role | بعد Login |
-|-------|------|-----------|
-| admin@umq.sa | super-admin | `/ar/admin` |
-| operations@umq.sa | admin | `/ar/admin` |
-| editor@umq.sa | editor | `/ar/editor` |
+| Email             | Role        | بعد Login    |
+| ----------------- | ----------- | ------------ |
+| admin@umq.sa      | super-admin | `/ar/admin`  |
+| operations@umq.sa | admin       | `/ar/admin`  |
+| editor@umq.sa     | editor      | `/ar/editor` |
 
 ## توثيق
 

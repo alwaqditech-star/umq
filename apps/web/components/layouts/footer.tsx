@@ -4,7 +4,10 @@ import Link from "next/link";
 import { Globe, Mail, MapPin } from "lucide-react";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
-import { useSectionEnabled, useSiteConfig } from "@/providers/site-config-provider";
+import {
+  useSectionEnabled,
+  useSiteConfig,
+} from "@/providers/site-config-provider";
 import type { Locale } from "@/stores/ui-store";
 
 const exploreLinks = [
@@ -15,9 +18,7 @@ const exploreLinks = [
   { key: "blog" as const, path: "/blog", sectionKey: "blog" },
 ] as const;
 
-const companyLinks = [
-  { key: "contact" as const, path: "/contact" },
-] as const;
+const companyLinks = [{ key: "contact" as const, path: "/contact" }] as const;
 
 export function Footer({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
@@ -31,7 +32,10 @@ export function Footer({ locale }: { locale: Locale }) {
 
   return (
     <footer className="relative mt-auto border-t border-border bg-surface">
-      <div className="footer-gradient-top absolute inset-x-0 top-0 h-px" aria-hidden />
+      <div
+        className="footer-gradient-top absolute inset-x-0 top-0 h-px"
+        aria-hidden
+      />
 
       <div className="container-umq py-14 sm:py-16">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
@@ -64,7 +68,10 @@ export function Footer({ locale }: { locale: Locale }) {
               </a>
             </div>
             <p className="mt-6 flex items-start gap-2 text-sm text-foreground-muted">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+              <MapPin
+                className="mt-0.5 h-4 w-4 shrink-0 text-accent"
+                aria-hidden
+              />
               {locale === "ar" ? contact.addressAr : contact.addressEn}
             </p>
           </div>
@@ -129,8 +136,12 @@ export function Footer({ locale }: { locale: Locale }) {
                 </li>
               </ul>
               <div className="mt-6 rounded-2xl border border-border/80 bg-background/80 p-4">
-                <p className="text-xs font-medium text-foreground">{f.newsletter}</p>
-                <p className="mt-1 text-xs text-foreground-muted">{f.newsletterHint}</p>
+                <p className="text-xs font-medium text-foreground">
+                  {f.newsletter}
+                </p>
+                <p className="mt-1 text-xs text-foreground-muted">
+                  {f.newsletterHint}
+                </p>
               </div>
             </div>
           </div>

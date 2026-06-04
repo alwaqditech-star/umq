@@ -25,11 +25,9 @@ export async function generateMetadata({
       api.blog.getBySlug!(slug, locale),
       fetchSeo(path, locale),
     ]);
-    const title =
-      seo?.title ?? localized(locale, post, "titleAr", "titleEn");
+    const title = seo?.title ?? localized(locale, post, "titleAr", "titleEn");
     const description =
-      seo?.description ??
-      localized(locale, post, "excerptAr", "excerptEn");
+      seo?.description ?? localized(locale, post, "excerptAr", "excerptEn");
     return {
       title,
       description,

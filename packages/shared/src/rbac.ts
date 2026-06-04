@@ -25,8 +25,10 @@ export function canAccessEditorPanel(
 }
 
 export function canSignIn(_permissions: string[], roleSlug?: string): boolean {
-  return canAccessAdminPanel(_permissions, roleSlug) ||
-    canAccessEditorPanel(_permissions, roleSlug);
+  return (
+    canAccessAdminPanel(_permissions, roleSlug) ||
+    canAccessEditorPanel(_permissions, roleSlug)
+  );
 }
 
 /** Post-login landing route (no locale prefix). */

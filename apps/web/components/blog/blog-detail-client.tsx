@@ -24,8 +24,7 @@ export function BlogDetailClient({
 }) {
   const title = localized(locale, post, "titleAr", "titleEn");
   const coverSrc = resolveMediaUrl(post.coverImageUrl);
-  const shareUrl =
-    typeof window !== "undefined" ? window.location.href : "";
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   const handleShare = async () => {
     if (navigator.share) {

@@ -9,7 +9,10 @@ export class ContactsService {
   private mapStatus(
     status: ContactStatus,
   ): "new" | "in_progress" | "resolved" | "closed" {
-    const map: Record<ContactStatus, "new" | "in_progress" | "resolved" | "closed"> = {
+    const map: Record<
+      ContactStatus,
+      "new" | "in_progress" | "resolved" | "closed"
+    > = {
       NEW: "new",
       IN_PROGRESS: "in_progress",
       RESOLVED: "resolved",

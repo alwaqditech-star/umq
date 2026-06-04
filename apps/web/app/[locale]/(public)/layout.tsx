@@ -1,6 +1,9 @@
 import { PublicLayout } from "@/components/layouts/public-layout";
 import { SiteConfigProvider } from "@/providers/site-config-provider";
-import { DEFAULT_CONTACT, DEFAULT_HOME_SECTIONS } from "@/lib/site-config.defaults";
+import {
+  DEFAULT_CONTACT,
+  DEFAULT_HOME_SECTIONS,
+} from "@/lib/site-config.defaults";
 import { isValidLocale } from "@/lib/i18n/routes";
 import { notFound } from "next/navigation";
 import type { Locale } from "@/stores/ui-store";

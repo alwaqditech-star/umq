@@ -26,7 +26,9 @@ export function ContactCtaSection({ locale }: { locale: Locale }) {
         >
           <h2 className="text-3xl font-bold sm:text-4xl">
             <span className="text-gradient">
-              {locale === "ar" ? "لنبني شيئاً عظيماً" : "Let's build something great"}
+              {locale === "ar"
+                ? "لنبني شيئاً عظيماً"
+                : "Let's build something great"}
             </span>
           </h2>
           <p className="mt-4 text-lg text-foreground-muted">

@@ -9,7 +9,15 @@ import { MediaCoverInput } from "@/components/admin/media-cover-input";
 export type FormField = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "email" | "password" | "number" | "select" | "checkbox" | "image";
+  type?:
+    | "text"
+    | "textarea"
+    | "email"
+    | "password"
+    | "number"
+    | "select"
+    | "checkbox"
+    | "image";
   required?: boolean;
   placeholder?: string;
   options?: { value: string; label: string }[];
@@ -41,7 +49,9 @@ export function AdminFormModal({
   locale: "ar" | "en";
 }) {
   const [values, setValues] = useState<Record<string, string>>({});
-  const [imagePreviews, setImagePreviews] = useState<Record<string, string>>({});
+  const [imagePreviews, setImagePreviews] = useState<Record<string, string>>(
+    {},
+  );
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

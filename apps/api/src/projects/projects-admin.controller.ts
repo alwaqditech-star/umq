@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from "@nestjs/common";
 import { ProjectsService } from "./projects.service";
 import { RequirePermissions } from "../common/decorators/permissions.decorator";
 
@@ -15,13 +23,18 @@ export class ProjectsAdminController {
   @Post()
   @RequirePermissions("projects:manage")
   create(@Body() body: Record<string, unknown>) {
-    return this.projectsService.createAdmin(body as Parameters<ProjectsService["createAdmin"]>[0]);
+    return this.projectsService.createAdmin(
+      body as Parameters<ProjectsService["createAdmin"]>[0],
+    );
   }
 
   @Patch(":id")
   @RequirePermissions("projects:manage")
   update(@Param("id") id: string, @Body() body: Record<string, unknown>) {
-    return this.projectsService.updateAdmin(id, body as Parameters<ProjectsService["updateAdmin"]>[1]);
+    return this.projectsService.updateAdmin(
+      id,
+      body as Parameters<ProjectsService["updateAdmin"]>[1],
+    );
   }
 
   @Delete(":id")

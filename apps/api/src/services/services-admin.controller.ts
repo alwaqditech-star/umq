@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from "@nestjs/common";
 import { ServicesService } from "./services.service";
 import { RequirePermissions } from "../common/decorators/permissions.decorator";
 
@@ -36,7 +44,10 @@ export class ServicesAdminController {
   @Patch(":id")
   @RequirePermissions("services:manage")
   update(@Param("id") id: string, @Body() body: Record<string, unknown>) {
-    return this.servicesService.updateAdmin(id, body as Parameters<ServicesService["updateAdmin"]>[1]);
+    return this.servicesService.updateAdmin(
+      id,
+      body as Parameters<ServicesService["updateAdmin"]>[1],
+    );
   }
 
   @Delete(":id")

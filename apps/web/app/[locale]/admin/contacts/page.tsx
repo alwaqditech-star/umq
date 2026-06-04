@@ -4,7 +4,6 @@ import { useCallback } from "react";
 import { useAdminList } from "@/hooks/use-admin-list";
 import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { api } from "@/lib/api";
-import type { Contact } from "@/lib/api/types";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -31,7 +30,7 @@ export default function AdminContactsPage() {
     () => api.contacts.listAdmin?.() ?? api.contacts.getAll(),
     [],
   );
-  const { items, setItems, loading, reload } = useAdminList(load);
+  const { items, setItems, loading } = useAdminList(load);
 
   if (loading) {
     return <AdminPageSkeleton />;

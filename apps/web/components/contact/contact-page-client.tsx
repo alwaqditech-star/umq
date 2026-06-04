@@ -39,8 +39,18 @@ export function ContactPageClient({
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const contactChannels = [
-    { key: "email" as const, icon: Mail, value: settings.email, label: c.email.label },
-    { key: "phone" as const, icon: Phone, value: settings.phone, label: c.phone.label },
+    {
+      key: "email" as const,
+      icon: Mail,
+      value: settings.email,
+      label: c.email.label,
+    },
+    {
+      key: "phone" as const,
+      icon: Phone,
+      value: settings.phone,
+      label: c.phone.label,
+    },
     {
       key: "address" as const,
       icon: MapPin,
@@ -140,7 +150,9 @@ export function ContactPageClient({
               <div className="flex items-start gap-3">
                 <MessageSquare className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
                 <div>
-                  <p className="font-semibold text-foreground">{c.responseTitle}</p>
+                  <p className="font-semibold text-foreground">
+                    {c.responseTitle}
+                  </p>
                   <p className="mt-2 text-sm text-foreground-muted">
                     {c.responseBody}
                   </p>
@@ -163,9 +175,7 @@ export function ContactPageClient({
                   loading="lazy"
                 />
               ) : (
-                <div
-                  className="mt-4 flex h-36 items-center justify-center rounded-xl border border-dashed border-accent/25 bg-accent/5 text-sm text-foreground-muted"
-                >
+                <div className="mt-4 flex h-36 items-center justify-center rounded-xl border border-dashed border-accent/25 bg-accent/5 text-sm text-foreground-muted">
                   {c.mapCaption}
                 </div>
               )}
@@ -250,7 +260,12 @@ export function ContactPageClient({
                           {error}
                         </p>
                       )}
-                      <Button type="submit" loading={loading} fullWidth size="lg">
+                      <Button
+                        type="submit"
+                        loading={loading}
+                        fullWidth
+                        size="lg"
+                      >
                         <Send className="h-4 w-4" />
                         {c.submit}
                       </Button>
@@ -307,10 +322,11 @@ export function ContactPageClient({
             <p className="text-lg font-semibold">
               {locale === "ar" ? "جاهز للبدء؟" : "Ready to start?"}
             </p>
-            <Link href={localePath(locale, "/services")} className="mt-4 inline-block">
-              <Button variant="secondary">
-                {dict.cta.learnMore}
-              </Button>
+            <Link
+              href={localePath(locale, "/services")}
+              className="mt-4 inline-block"
+            >
+              <Button variant="secondary">{dict.cta.learnMore}</Button>
             </Link>
           </Card>
         </FadeUp>

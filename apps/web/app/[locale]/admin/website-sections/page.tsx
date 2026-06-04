@@ -90,7 +90,11 @@ export default function WebsiteSectionsAdminPage() {
       ) : (
         <div className="space-y-3">
           {rows.map((row, index) => (
-            <Card key={row.id} padding="md" className="flex flex-col gap-4 lg:flex-row lg:items-center">
+            <Card
+              key={row.id}
+              padding="md"
+              className="flex flex-col gap-4 lg:flex-row lg:items-center"
+            >
               <div className="flex items-center gap-2 text-foreground-muted">
                 <GripVertical className="h-4 w-4" />
                 <code className="rounded bg-accent/10 px-2 py-0.5 text-xs text-accent">

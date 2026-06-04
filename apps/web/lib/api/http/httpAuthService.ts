@@ -56,21 +56,23 @@ export const httpAuthService: AuthService = {
   },
 
   async changePassword(currentPassword: string, newPassword: string) {
-    const result = await apiFetch<{ message: string }>("/auth/change-password", {
-      method: "POST",
-      auth: true,
-      body: JSON.stringify({ currentPassword, newPassword }),
-    });
+    const result = await apiFetch<{ message: string }>(
+      "/auth/change-password",
+      {
+        method: "POST",
+        auth: true,
+        body: JSON.stringify({ currentPassword, newPassword }),
+      },
+    );
     useAuthStore.getState().clearSession();
     return result;
   },
 
   async getCurrentUser() {
     try {
-      const user = await apiFetch<import("../interfaces/auth.service").AuthUser>(
-        "/auth/me",
-        { auth: true },
-      );
+      const user = await apiFetch<
+        import("../interfaces/auth.service").AuthUser
+      >("/auth/me", { auth: true });
       useAuthStore.getState().setUser(user);
       return user;
     } catch {

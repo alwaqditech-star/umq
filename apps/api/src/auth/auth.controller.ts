@@ -49,7 +49,10 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { session, tokens } = await this.authService.login(dto, requestMeta(req));
+    const { session, tokens } = await this.authService.login(
+      dto,
+      requestMeta(req),
+    );
     setAuthCookies(res, this.config, {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
@@ -137,10 +140,7 @@ export class AuthController {
   }
 
   @Delete("sessions/:id")
-  revokeSession(
-    @CurrentUser() user: RequestUser,
-    @Param("id") id: string,
-  ) {
+  revokeSession(@CurrentUser() user: RequestUser, @Param("id") id: string) {
     return this.authService.revokeSession(user.id, id);
   }
 

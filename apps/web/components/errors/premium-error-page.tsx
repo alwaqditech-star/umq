@@ -92,7 +92,10 @@ export function PremiumErrorPage({
           </div>
 
           {showSearch && (
-            <form onSubmit={runSearch} className="surface-premium mx-auto mt-12 max-w-lg rounded-2xl p-6 text-start">
+            <form
+              onSubmit={runSearch}
+              className="surface-premium mx-auto mt-12 max-w-lg rounded-2xl p-6 text-start"
+            >
               <label className="flex items-center gap-2 text-sm font-medium">
                 <Search className="h-4 w-4 text-accent" />
                 {locale === "ar" ? "بحث في الموقع" : "Search the site"}

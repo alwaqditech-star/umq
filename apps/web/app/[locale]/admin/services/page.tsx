@@ -6,7 +6,10 @@ import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { api } from "@/lib/api";
 import type { Service } from "@/lib/api/types";
-import { AdminFormModal, contentStatusOptions } from "@/components/admin/form-modal";
+import {
+  AdminFormModal,
+  contentStatusOptions,
+} from "@/components/admin/form-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,16 +26,55 @@ import { useAuthStore } from "@/stores/auth-store";
 
 const serviceFields = (locale: "ar" | "en") => [
   { name: "slug", label: "Slug", required: true },
-  { name: "titleAr", label: locale === "ar" ? "العنوان (عربي)" : "Title (AR)", required: true },
-  { name: "titleEn", label: locale === "ar" ? "العنوان (إنجليزي)" : "Title (EN)", required: true },
-  { name: "summaryAr", label: locale === "ar" ? "ملخص عربي" : "Summary AR", type: "textarea" as const },
-  { name: "summaryEn", label: locale === "ar" ? "ملخص إنجليزي" : "Summary EN", type: "textarea" as const },
-  { name: "contentAr", label: locale === "ar" ? "المحتوى عربي" : "Content AR", type: "textarea" as const, rows: 5 },
-  { name: "contentEn", label: locale === "ar" ? "المحتوى إنجليزي" : "Content EN", type: "textarea" as const, rows: 5 },
+  {
+    name: "titleAr",
+    label: locale === "ar" ? "العنوان (عربي)" : "Title (AR)",
+    required: true,
+  },
+  {
+    name: "titleEn",
+    label: locale === "ar" ? "العنوان (إنجليزي)" : "Title (EN)",
+    required: true,
+  },
+  {
+    name: "summaryAr",
+    label: locale === "ar" ? "ملخص عربي" : "Summary AR",
+    type: "textarea" as const,
+  },
+  {
+    name: "summaryEn",
+    label: locale === "ar" ? "ملخص إنجليزي" : "Summary EN",
+    type: "textarea" as const,
+  },
+  {
+    name: "contentAr",
+    label: locale === "ar" ? "المحتوى عربي" : "Content AR",
+    type: "textarea" as const,
+    rows: 5,
+  },
+  {
+    name: "contentEn",
+    label: locale === "ar" ? "المحتوى إنجليزي" : "Content EN",
+    type: "textarea" as const,
+    rows: 5,
+  },
   { name: "icon", label: locale === "ar" ? "أيقونة" : "Icon" },
-  { name: "order", label: locale === "ar" ? "الترتيب" : "Order", type: "number" as const },
-  { name: "status", label: locale === "ar" ? "الحالة" : "Status", type: "select" as const, options: contentStatusOptions(locale) },
-  { name: "featured", label: locale === "ar" ? "مميز" : "Featured", type: "checkbox" as const },
+  {
+    name: "order",
+    label: locale === "ar" ? "الترتيب" : "Order",
+    type: "number" as const,
+  },
+  {
+    name: "status",
+    label: locale === "ar" ? "الحالة" : "Status",
+    type: "select" as const,
+    options: contentStatusOptions(locale),
+  },
+  {
+    name: "featured",
+    label: locale === "ar" ? "مميز" : "Featured",
+    type: "checkbox" as const,
+  },
 ];
 
 function toPayload(values: Record<string, string>) {
@@ -109,13 +151,17 @@ export default function AdminServicesPage() {
             <TableHead>{locale === "ar" ? "العنوان" : "Title"}</TableHead>
             <TableHead>Slug</TableHead>
             <TableHead>{locale === "ar" ? "الحالة" : "Status"}</TableHead>
-            {canManage && <TableHead>{locale === "ar" ? "إجراءات" : "Actions"}</TableHead>}
+            {canManage && (
+              <TableHead>{locale === "ar" ? "إجراءات" : "Actions"}</TableHead>
+            )}
           </TableRow>
         </TableHeader>
         <TableBody>
           {items.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{localized(locale, row, "titleAr", "titleEn")}</TableCell>
+              <TableCell>
+                {localized(locale, row, "titleAr", "titleEn")}
+              </TableCell>
               <TableCell>{row.slug}</TableCell>
               <TableCell>
                 <Badge>{row.status ?? "draft"}</Badge>

@@ -38,7 +38,9 @@ export default function ForgotPasswordPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-center">{dict.auth.forgotTitle}</h1>
+      <h1 className="text-2xl font-bold text-center">
+        {dict.auth.forgotTitle}
+      </h1>
       <p className="mt-2 text-center text-sm text-foreground-muted">
         {dict.auth.forgotSubtitle}
       </p>
@@ -51,7 +53,10 @@ export default function ForgotPasswordPage() {
           required
         />
         {message && (
-          <p className="text-sm text-green-700 dark:text-green-400" role="status">
+          <p
+            className="text-sm text-green-700 dark:text-green-400"
+            role="status"
+          >
             {message}
           </p>
         )}

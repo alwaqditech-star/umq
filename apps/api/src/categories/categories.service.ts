@@ -59,7 +59,12 @@ export class CategoriesService {
 
   async updateProject(
     id: string,
-    data: Partial<{ slug: string; nameAr: string; nameEn: string; order: number }>,
+    data: Partial<{
+      slug: string;
+      nameAr: string;
+      nameEn: string;
+      order: number;
+    }>,
   ) {
     try {
       const row = await this.prisma.projectCategory.update({
@@ -101,7 +106,10 @@ export class CategoriesService {
     data: Partial<{ slug: string; nameAr: string; nameEn: string }>,
   ) {
     try {
-      const row = await this.prisma.blogCategory.update({ where: { id }, data });
+      const row = await this.prisma.blogCategory.update({
+        where: { id },
+        data,
+      });
       return this.map({ ...row, order: 0 });
     } catch {
       throw new NotFoundException("Category not found");
@@ -115,5 +123,4 @@ export class CategoriesService {
     });
     return { message: "Category deleted" };
   }
-
 }

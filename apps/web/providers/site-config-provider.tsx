@@ -76,7 +76,9 @@ export function SiteConfigProvider({
   );
 
   return (
-    <SiteConfigContext.Provider value={value}>{children}</SiteConfigContext.Provider>
+    <SiteConfigContext.Provider value={value}>
+      {children}
+    </SiteConfigContext.Provider>
   );
 }
 

@@ -47,51 +47,55 @@ export function BlogPreviewSection({
           {featured.map((post) => {
             const coverSrc = resolveMediaUrl(post.coverImageUrl);
             return (
-            <StaggerItem key={post.id}>
-              <Card hover elevated className="group h-full overflow-hidden p-0">
-                <Link href={localePath(locale, `/blog/${post.slug}`)}>
-                  <div className="relative aspect-[16/10] overflow-hidden bg-accent/10">
-                    {coverSrc ? (
-                      <Image
-                        src={coverSrc}
-                        alt={localized(locale, post, "titleAr", "titleEn")}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width:768px) 100vw, 33vw"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-sm text-foreground-muted">
-                        UMQ
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-6">
-                    <p className="text-xs font-medium text-accent">
-                      {post.category}
-                    </p>
-                    <h3 className="mt-2 text-lg font-semibold line-clamp-2 group-hover:text-accent">
-                      {localized(locale, post, "titleAr", "titleEn")}
-                    </h3>
-                    <p className="mt-2 text-sm text-foreground-muted line-clamp-2">
-                      {localized(locale, post, "excerptAr", "excerptEn")}
-                    </p>
-                    <div className="mt-4 flex items-center gap-3 text-xs text-foreground-muted">
-                      <span className="inline-flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5" />
-                        {post.readingTime} min
-                      </span>
-                      {post.publishedAt && (
-                        <span className="inline-flex items-center gap-1">
-                          <Calendar className="h-3.5 w-3.5" />
-                          {post.publishedAt.slice(0, 10)}
-                        </span>
+              <StaggerItem key={post.id}>
+                <Card
+                  hover
+                  elevated
+                  className="group h-full overflow-hidden p-0"
+                >
+                  <Link href={localePath(locale, `/blog/${post.slug}`)}>
+                    <div className="relative aspect-[16/10] overflow-hidden bg-accent/10">
+                      {coverSrc ? (
+                        <Image
+                          src={coverSrc}
+                          alt={localized(locale, post, "titleAr", "titleEn")}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          sizes="(max-width:768px) 100vw, 33vw"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-sm text-foreground-muted">
+                          UMQ
+                        </div>
                       )}
                     </div>
-                  </div>
-                </Link>
-              </Card>
-            </StaggerItem>
-          );
+                    <div className="p-6">
+                      <p className="text-xs font-medium text-accent">
+                        {post.category}
+                      </p>
+                      <h3 className="mt-2 text-lg font-semibold line-clamp-2 group-hover:text-accent">
+                        {localized(locale, post, "titleAr", "titleEn")}
+                      </h3>
+                      <p className="mt-2 text-sm text-foreground-muted line-clamp-2">
+                        {localized(locale, post, "excerptAr", "excerptEn")}
+                      </p>
+                      <div className="mt-4 flex items-center gap-3 text-xs text-foreground-muted">
+                        <span className="inline-flex items-center gap-1">
+                          <Clock className="h-3.5 w-3.5" />
+                          {post.readingTime} min
+                        </span>
+                        {post.publishedAt && (
+                          <span className="inline-flex items-center gap-1">
+                            <Calendar className="h-3.5 w-3.5" />
+                            {post.publishedAt.slice(0, 10)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                </Card>
+              </StaggerItem>
+            );
           })}
         </StaggerList>
       </div>

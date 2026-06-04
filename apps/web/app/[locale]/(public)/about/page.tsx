@@ -14,7 +14,8 @@ const pillars = [
     ar: "الرؤية",
     en: "Vision",
     bodyAr: "أن نكون الشريك التقني الأعمق للمؤسسات في المنطقة.",
-    bodyEn: "To be the deepest technology partner for organizations in the region.",
+    bodyEn:
+      "To be the deepest technology partner for organizations in the region.",
   },
   {
     icon: Target,
@@ -39,7 +40,11 @@ export default function AboutPage() {
 
   return (
     <>
-      <PageHeader kicker={p.aboutKicker} title={p.aboutTitle} description={p.aboutDesc} />
+      <PageHeader
+        kicker={p.aboutKicker}
+        title={p.aboutTitle}
+        description={p.aboutDesc}
+      />
 
       <div className="container-umq py-14 sm:py-20">
         <FadeUp>

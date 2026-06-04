@@ -32,14 +32,9 @@ export function PageHeader({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className={cn(
-            "max-w-3xl",
-            centered && "mx-auto text-center",
-          )}
+          className={cn("max-w-3xl", centered && "mx-auto text-center")}
         >
-          {kicker && (
-            <span className="section-kicker">{kicker}</span>
-          )}
+          {kicker && <span className="section-kicker">{kicker}</span>}
           <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
             <span className="text-gradient">{title}</span>
           </h1>

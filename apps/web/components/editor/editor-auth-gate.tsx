@@ -23,8 +23,8 @@ export function EditorAuthGate({
   const user = useAuthStore((s) => s.user);
   const sessionVerified = useAuthStore((s) => s.sessionVerified);
   const markSessionVerified = useAuthStore((s) => s.markSessionVerified);
-  const [ready, setReady] = useState(
-    () => Boolean(sessionVerified && user && isEditorUser(user)),
+  const [ready, setReady] = useState(() =>
+    Boolean(sessionVerified && user && isEditorUser(user)),
   );
 
   useEffect(() => {

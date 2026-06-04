@@ -20,28 +20,32 @@ export function ServicesPageClient({
 
   return (
     <>
-      <PageHeader kicker={p.servicesKicker} title={p.servicesTitle} description={p.servicesDesc} />
+      <PageHeader
+        kicker={p.servicesKicker}
+        title={p.servicesTitle}
+        description={p.servicesDesc}
+      />
       <div className="container-umq py-14 sm:py-20">
-      <StaggerList className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {services.map((service) => {
-          const Icon = serviceIconMap[service.icon] ?? Layers;
-          return (
-            <StaggerItem key={service.id}>
-              <Card hover elevated className="h-full">
-                <div className="mb-4 inline-flex rounded-xl border border-accent/20 bg-accent/15 p-3 text-accent">
-                  <Icon className="h-6 w-6" />
-                </div>
-                <h2 className="text-xl font-semibold">
-                  {localized(locale, service, "titleAr", "titleEn")}
-                </h2>
-                <p className="mt-2 text-sm text-foreground-muted">
-                  {localized(locale, service, "summaryAr", "summaryEn")}
-                </p>
-              </Card>
-            </StaggerItem>
-          );
-        })}
-      </StaggerList>
+        <StaggerList className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => {
+            const Icon = serviceIconMap[service.icon] ?? Layers;
+            return (
+              <StaggerItem key={service.id}>
+                <Card hover elevated className="h-full">
+                  <div className="mb-4 inline-flex rounded-xl border border-accent/20 bg-accent/15 p-3 text-accent">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h2 className="text-xl font-semibold">
+                    {localized(locale, service, "titleAr", "titleEn")}
+                  </h2>
+                  <p className="mt-2 text-sm text-foreground-muted">
+                    {localized(locale, service, "summaryAr", "summaryEn")}
+                  </p>
+                </Card>
+              </StaggerItem>
+            );
+          })}
+        </StaggerList>
       </div>
     </>
   );

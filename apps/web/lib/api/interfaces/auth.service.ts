@@ -26,8 +26,13 @@ export interface AuthService {
   login(credentials: LoginCredentials): Promise<AuthUser>;
   logout(): Promise<void>;
   getCurrentUser(): Promise<AuthUser | null>;
-  forgotPassword(email: string): Promise<{ message: string; resetUrl?: string }>;
-  resetPassword(token: string, newPassword: string): Promise<{ message: string }>;
+  forgotPassword(
+    email: string,
+  ): Promise<{ message: string; resetUrl?: string }>;
+  resetPassword(
+    token: string,
+    newPassword: string,
+  ): Promise<{ message: string }>;
   changePassword(
     currentPassword: string,
     newPassword: string,

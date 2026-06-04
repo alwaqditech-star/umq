@@ -12,7 +12,10 @@ import {
   type HomeSectionConfig,
 } from "@/lib/site-config.defaults";
 
-export type { ContactInfoSettings, HomeSectionConfig } from "@/lib/site-config.defaults";
+export type {
+  ContactInfoSettings,
+  HomeSectionConfig,
+} from "@/lib/site-config.defaults";
 export {
   DEFAULT_CONTACT,
   DEFAULT_HOME_SECTIONS,

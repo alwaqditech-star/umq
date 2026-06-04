@@ -2,11 +2,7 @@ import type { ApiClient } from "../index";
 import { httpAuthService } from "./httpAuthService";
 import { createHttpCrud } from "./httpCrud";
 import { apiFetch, getBaseUrl } from "./client";
-import {
-  blogCategoriesApi,
-  cmsApi,
-  projectCategoriesApi,
-} from "./httpCms";
+import { blogCategoriesApi, cmsApi, projectCategoriesApi } from "./httpCms";
 import type {
   BlogPost,
   Contact,

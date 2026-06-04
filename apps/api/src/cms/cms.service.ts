@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { ContentStatus, Locale } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 
@@ -6,7 +6,9 @@ import { PrismaService } from "../prisma/prisma.service";
 export class CmsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  private mapContentStatus(status: ContentStatus): "published" | "draft" | "inactive" {
+  private mapContentStatus(
+    status: ContentStatus,
+  ): "published" | "draft" | "inactive" {
     if (status === ContentStatus.PUBLISHED) return "published";
     if (status === ContentStatus.DRAFT) return "draft";
     return "inactive";
@@ -185,7 +187,12 @@ export class CmsService {
           ) ?? ContentStatus.DRAFT,
       },
     });
-    return { id: m.id, nameAr: m.nameAr, nameEn: m.nameEn, status: this.mapContentStatus(m.status) };
+    return {
+      id: m.id,
+      nameAr: m.nameAr,
+      nameEn: m.nameEn,
+      status: this.mapContentStatus(m.status),
+    };
   }
 
   async updateTeam(id: string, data: Record<string, unknown>) {
@@ -349,9 +356,7 @@ export class CmsService {
     return this.prisma.homeSection.update({ where: { id }, data });
   }
 
-  async reorderHomeSections(
-    items: { id: string; sortOrder: number }[],
-  ) {
+  async reorderHomeSections(items: { id: string; sortOrder: number }[]) {
     await this.prisma.$transaction(
       items.map((item) =>
         this.prisma.homeSection.update({
@@ -429,16 +434,14 @@ export class CmsService {
       update: {
         type: data.type,
         content: data.content,
-        status:
-          this.parseContentStatus(data.status) ?? ContentStatus.PUBLISHED,
+        status: this.parseContentStatus(data.status) ?? ContentStatus.PUBLISHED,
       },
       create: {
         key: data.key,
         type: data.type,
         content: data.content,
         locale: locale ?? Locale.AR,
-        status:
-          this.parseContentStatus(data.status) ?? ContentStatus.DRAFT,
+        status: this.parseContentStatus(data.status) ?? ContentStatus.DRAFT,
       },
     });
   }

@@ -11,12 +11,12 @@
 
 ## إعداد مشروع Vercel (مهم)
 
-| الإعداد | القيمة |
-|---------|--------|
-| **Root Directory** | `apps/web` |
-| **Framework Preset** | Next.js |
-| **Install Command** | `cd ../.. && pnpm install --frozen-lockfile` |
-| **Build Command** | `cd ../.. && pnpm turbo run build --filter=@umq/web` |
+| الإعداد              | القيمة                                               |
+| -------------------- | ---------------------------------------------------- |
+| **Root Directory**   | `apps/web`                                           |
+| **Framework Preset** | Next.js                                              |
+| **Install Command**  | `cd ../.. && pnpm install --frozen-lockfile`         |
+| **Build Command**    | `cd ../.. && pnpm turbo run build --filter=@umq/web` |
 
 ملف `apps/web/vercel.json` يضبط Install/Build تلقائياً إن لم تُغيّرها يدوياً.
 
@@ -77,5 +77,5 @@ PUBLIC_API_URL=https://api.your-domain.com/api/v1
 
 ## سجلات الأخطاء
 
-Vercel → Project → **Deployments** → آخر نشر → **Functions** / **Runtime Logs  
+Vercel → Project → **Deployments** → آخر نشر → **Functions** / \*\*Runtime Logs  
 ابحث عن `Cannot find module '@umq/shared'` أو `ECONNREFUSED 127.0.0.1:4001`.

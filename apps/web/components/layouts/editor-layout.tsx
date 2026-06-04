@@ -13,7 +13,10 @@ import { useUiStore, type Locale } from "@/stores/ui-store";
 import { cn } from "@/lib/utils";
 import { Suspense } from "react";
 import { NavigationProgress } from "@/components/navigation/navigation-progress";
-import { editorNavItems, filterNavByPermissions } from "@/lib/editor/nav-config";
+import {
+  editorNavItems,
+  filterNavByPermissions,
+} from "@/lib/editor/nav-config";
 
 export function EditorLayout({
   locale,
@@ -82,7 +85,9 @@ export function EditorLayout({
                 {user?.name ?? dict.admin.welcome}
                 {user?.role ? ` · ${user.role}` : ""}
               </p>
-              <h1 className="text-lg font-semibold text-foreground">{pageTitle}</h1>
+              <h1 className="text-lg font-semibold text-foreground">
+                {pageTitle}
+              </h1>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -98,7 +103,11 @@ export function EditorLayout({
                 <Sun className="h-5 w-5" />
               )}
             </button>
-            <Button variant="ghost" size="sm" onClick={() => void handleLogout()}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => void handleLogout()}
+            >
               <LogOut className="h-4 w-4" />
               {dict.admin.logout}
             </Button>

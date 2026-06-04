@@ -1,6 +1,11 @@
 import { cn } from "@/lib/utils";
 
-export type BadgeVariant = "default" | "accent" | "success" | "warning" | "danger";
+export type BadgeVariant =
+  | "default"
+  | "accent"
+  | "success"
+  | "warning"
+  | "danger";
 
 const variants: Record<BadgeVariant, string> = {
   default: "bg-chip text-chip",

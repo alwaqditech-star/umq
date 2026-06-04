@@ -5,7 +5,10 @@ export const fadeUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: motionTokens.duration.normal, ease: motionTokens.ease },
+    transition: {
+      duration: motionTokens.duration.normal,
+      ease: motionTokens.ease,
+    },
   },
 };
 
@@ -30,7 +33,10 @@ export const staggerItem = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: motionTokens.duration.normal, ease: motionTokens.ease },
+    transition: {
+      duration: motionTokens.duration.normal,
+      ease: motionTokens.ease,
+    },
   },
 };
 
@@ -51,5 +57,8 @@ export const modalContent = {
   initial: { opacity: 0, scale: 0.96, y: 8 },
   animate: { opacity: 1, scale: 1, y: 0 },
   exit: { opacity: 0, scale: 0.96, y: 8 },
-  transition: { duration: motionTokens.duration.normal, ease: motionTokens.ease },
+  transition: {
+    duration: motionTokens.duration.normal,
+    ease: motionTokens.ease,
+  },
 };

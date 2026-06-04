@@ -38,7 +38,8 @@ export function TestimonialsSection({
                   ))}
                 </div>
                 <p className="mt-4 text-foreground-muted">
-                  &ldquo;{localized(locale, item, "contentAr", "contentEn")}&rdquo;
+                  &ldquo;{localized(locale, item, "contentAr", "contentEn")}
+                  &rdquo;
                 </p>
                 <div className="mt-6 border-t border-border pt-4">
                   <p className="font-semibold">

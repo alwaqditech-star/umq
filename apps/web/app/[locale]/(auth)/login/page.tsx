@@ -44,11 +44,7 @@ export default function LoginPage() {
     } catch (err) {
       const msg = err instanceof Error ? err.message : "";
       if (msg.includes("Cannot reach API")) {
-        setError(
-          locale === "ar"
-            ? "الخادم غير متاح. شغّل API: pnpm dev"
-            : msg,
-        );
+        setError(locale === "ar" ? "الخادم غير متاح. شغّل API: pnpm dev" : msg);
         return;
       }
       if (err instanceof ApiError && err.status === 404) {
@@ -60,9 +56,7 @@ export default function LoginPage() {
         return;
       }
       setError(
-        locale === "ar"
-          ? "بيانات الدخول غير صحيحة"
-          : "Invalid credentials",
+        locale === "ar" ? "بيانات الدخول غير صحيحة" : "Invalid credentials",
       );
     } finally {
       setLoading(false);

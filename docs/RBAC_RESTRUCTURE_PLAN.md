@@ -7,11 +7,11 @@
 
 ## 1. الأدوار الجديدة (3 فقط)
 
-| Slug | الاسم | لوحة التحكم |
-|------|-------|-------------|
-| `super-admin` | Super Admin | `/admin` — كامل الصلاحيات |
-| `admin` | Admin | `/admin` — CMS + محتوى (بدون users/roles/audit) |
-| `editor` | Editor | `/editor` — محتوى محدود (blog, projects, media) |
+| Slug          | الاسم       | لوحة التحكم                                     |
+| ------------- | ----------- | ----------------------------------------------- |
+| `super-admin` | Super Admin | `/admin` — كامل الصلاحيات                       |
+| `admin`       | Admin       | `/admin` — CMS + محتوى (بدون users/roles/audit) |
+| `editor`      | Editor      | `/editor` — محتوى محدود (blog, projects, media) |
 
 ## 2. أدوار تُحذف نهائياً
 
@@ -27,12 +27,12 @@
 
 ### Prisma / MySQL
 
-| يُحذف | |
-|--------|--|
-| `JobCategory` | `job_categories` |
-| `Job` | `jobs` |
-| `Application` | `applications` |
-| `ApplicationStatus` enum | |
+| يُحذف                    |                  |
+| ------------------------ | ---------------- |
+| `JobCategory`            | `job_categories` |
+| `Job`                    | `jobs`           |
+| `Application`            | `applications`   |
+| `ApplicationStatus` enum |                  |
 
 ### NestJS (حذف modules)
 
@@ -54,11 +54,11 @@
 
 ## 4. إخفاء الإدارة من الموقع العام
 
-| العنصر | الإجراء |
-|--------|---------|
+| العنصر                              | الإجراء                           |
+| ----------------------------------- | --------------------------------- |
 | `PublicNavAuth` (Login / Dashboard) | إزالة من Navbar والقائمة الجوالية |
-| روابط careers | إزالة |
-| Footer admin links | التحقق — لا روابط إدارة |
+| روابط careers                       | إزالة                             |
+| Footer admin links                  | التحقق — لا روابط إدارة           |
 
 **الدخول:** فقط عبر `/[locale]/login` (رابط مباشر — غير معروض في الهيدر).
 
@@ -66,13 +66,13 @@
 
 ## 5. Auth & Redirects
 
-| الحالة | السلوك |
-|--------|--------|
-| زائر → `/admin` أو `/editor` | → `/login` |
-| `/login` + مسجل | → `/admin` أو `/editor` حسب الدور |
-| `super-admin` / `admin` → `/editor` | → `/admin` (اختياري) أو 403 |
-| `editor` → `/admin` | → `/forbidden` |
-| بدون صلاحية | `/forbidden` |
+| الحالة                              | السلوك                            |
+| ----------------------------------- | --------------------------------- |
+| زائر → `/admin` أو `/editor`        | → `/login`                        |
+| `/login` + مسجل                     | → `/admin` أو `/editor` حسب الدور |
+| `super-admin` / `admin` → `/editor` | → `/admin` (اختياري) أو 403       |
+| `editor` → `/admin`                 | → `/forbidden`                    |
+| بدون صلاحية                         | `/forbidden`                      |
 
 Cookie `umq_admin_home`: يخزن `/admin` أو `/editor`.
 
@@ -96,11 +96,11 @@ Cookie `umq_admin_home`: يخزن `/admin` أو `/editor`.
 
 ## 7. لوحات التحكم
 
-| الدور | المسار | Sidebar |
-|-------|--------|---------|
-| Super Admin | `/admin` | كامل |
-| Admin | `/admin` | بدون users/roles/audit |
-| Editor | `/editor` | blog, projects, media, account |
+| الدور       | المسار    | Sidebar                        |
+| ----------- | --------- | ------------------------------ |
+| Super Admin | `/admin`  | كامل                           |
+| Admin       | `/admin`  | بدون users/roles/audit         |
+| Editor      | `/editor` | blog, projects, media, account |
 
 صفحات Editor تعيد استخدام مكوّنات admin عبر re-export حيث أمكن.
 

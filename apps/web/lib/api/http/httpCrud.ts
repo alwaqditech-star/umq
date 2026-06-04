@@ -1,4 +1,9 @@
-import type { BaseEntity, CrudService, CreateInput, UpdateInput } from "../types";
+import type {
+  BaseEntity,
+  CrudService,
+  CreateInput,
+  UpdateInput,
+} from "../types";
 import { apiFetch } from "./client";
 
 export function createHttpCrud<T extends BaseEntity>(

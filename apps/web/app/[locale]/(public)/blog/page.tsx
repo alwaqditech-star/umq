@@ -18,7 +18,8 @@ export async function generateMetadata({
   const { locale: localeParam } = await params;
   const seo = await fetchSeo("/blog", localeParam);
   return {
-    title: seo?.title ?? (localeParam === "ar" ? "المدونة | عُمْق" : "Blog | UMQ"),
+    title:
+      seo?.title ?? (localeParam === "ar" ? "المدونة | عُمْق" : "Blog | UMQ"),
     description: seo?.description,
   };
 }

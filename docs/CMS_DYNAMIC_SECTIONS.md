@@ -2,12 +2,12 @@
 
 ## Model: `home_sections`
 
-| Field | Purpose |
-|-------|---------|
-| `key` | `hero`, `services`, `projects`, `blog`, … |
-| `labelAr` / `labelEn` | Admin display name |
-| `isEnabled` | Show/hide on site |
-| `sortOrder` | Homepage order |
+| Field                 | Purpose                                   |
+| --------------------- | ----------------------------------------- |
+| `key`                 | `hero`, `services`, `projects`, `blog`, … |
+| `labelAr` / `labelEn` | Admin display name                        |
+| `isEnabled`           | Show/hide on site                         |
+| `sortOrder`           | Homepage order                            |
 
 ## Admin
 

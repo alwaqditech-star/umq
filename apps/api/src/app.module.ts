@@ -39,18 +39,12 @@ import { MediaModule } from "./media/media.module";
 import { SearchModule } from "./search/search.module";
 import { AuditInterceptor } from "./common/interceptors/audit.interceptor";
 
-
-
 @Module({
-
   imports: [
-
     ConfigModule.forRoot({
-
       isGlobal: true,
 
       envFilePath: [".env", "../../.env"],
-
     }),
 
     ThrottlerModule.forRoot([
@@ -87,13 +81,11 @@ import { AuditInterceptor } from "./common/interceptors/audit.interceptor";
     MediaModule,
 
     SearchModule,
-
   ],
 
   controllers: [AppController],
 
   providers: [
-
     AppService,
 
     { provide: APP_GUARD, useClass: ThrottlerGuard },
@@ -103,10 +95,6 @@ import { AuditInterceptor } from "./common/interceptors/audit.interceptor";
     { provide: APP_GUARD, useClass: PermissionsGuard },
 
     { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
-
   ],
-
 })
-
 export class AppModule {}
-

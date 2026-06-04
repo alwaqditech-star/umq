@@ -11,7 +11,10 @@ import { adminNavItems, type AdminNavItem } from "./nav-config";
 
 export { canAccessAdminPanel, canAccessEditorPanel, canSignIn };
 
-export function getPostLoginPathForLocale(roleSlug: string, locale: Locale): string {
+export function getPostLoginPathForLocale(
+  roleSlug: string,
+  locale: Locale,
+): string {
   return localePath(locale, getPostLoginPath(roleSlug));
 }
 
@@ -28,7 +31,10 @@ export function isEditorUser(user: AuthUser | null): boolean {
   return canAccessEditorPanel(user?.permissions ?? [], user?.roleSlug);
 }
 
-export function getAdminPathFromPathname(pathname: string, locale: Locale): string {
+export function getAdminPathFromPathname(
+  pathname: string,
+  locale: Locale,
+): string {
   const prefix = `/${locale}`;
   if (!pathname.startsWith(prefix)) return pathname;
   const rest = pathname.slice(prefix.length) || "/";
@@ -37,7 +43,9 @@ export function getAdminPathFromPathname(pathname: string, locale: Locale): stri
   return "/admin";
 }
 
-export function findNavItemForAdminPath(adminPath: string): AdminNavItem | undefined {
+export function findNavItemForAdminPath(
+  adminPath: string,
+): AdminNavItem | undefined {
   if (adminPath === "/admin" || adminPath === "/admin/") {
     return adminNavItems.find((item) => item.href === "/admin");
   }

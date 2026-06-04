@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
 import { useAdminList } from "@/hooks/use-admin-list";
 import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
+import { resolveMediaUrl } from "@/lib/media-url";
 import { useLocale } from "@/lib/i18n/use-locale";
 
 type MediaItem = {
@@ -84,11 +86,16 @@ export default function AdminMediaPage() {
             className="rounded-2xl border border-border p-4 space-y-2"
           >
             {item.mimeType.startsWith("image/") ? (
-              <img
-                src={item.url}
-                alt={item.filename}
-                className="h-32 w-full rounded-lg object-cover"
-              />
+              <div className="relative h-32 w-full overflow-hidden rounded-lg">
+                <Image
+                  src={resolveMediaUrl(item.url) ?? item.url}
+                  alt={item.filename}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  unoptimized
+                />
+              </div>
             ) : (
               <div className="flex h-32 items-center justify-center rounded-lg bg-surface text-sm">
                 {item.mimeType}

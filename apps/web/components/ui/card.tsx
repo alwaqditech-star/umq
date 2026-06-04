@@ -19,7 +19,14 @@ const paddingMap = {
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
   (
-    { className, hover = false, elevated = false, padding = "md", children, ...props },
+    {
+      className,
+      hover = false,
+      elevated = false,
+      padding = "md",
+      children,
+      ...props
+    },
     ref,
   ) => {
     const inner = (
@@ -58,7 +65,9 @@ export function CardHeader({
   className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("mb-4 flex flex-col gap-1", className)} {...props} />;
+  return (
+    <div className={cn("mb-4 flex flex-col gap-1", className)} {...props} />
+  );
 }
 
 export function CardTitle({

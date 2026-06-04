@@ -66,8 +66,7 @@ export function AdminLayout({
     testimonials: locale === "ar" ? "آراء العملاء" : "Testimonials",
     audit: locale === "ar" ? "التدقيق" : "Audit",
     media: locale === "ar" ? "الوسائط" : "Media",
-    websiteSections:
-      locale === "ar" ? "أقسام الموقع" : "Website sections",
+    websiteSections: locale === "ar" ? "أقسام الموقع" : "Website sections",
   };
 
   return (
@@ -98,7 +97,9 @@ export function AdminLayout({
                 {user?.name ?? dict.admin.welcome}
                 {user?.role ? ` · ${user.role}` : ""}
               </p>
-              <h1 className="text-lg font-semibold text-foreground">{pageTitle}</h1>
+              <h1 className="text-lg font-semibold text-foreground">
+                {pageTitle}
+              </h1>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -114,7 +115,11 @@ export function AdminLayout({
                 <Sun className="h-5 w-5" />
               )}
             </button>
-            <Button variant="ghost" size="sm" onClick={() => void handleLogout()}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => void handleLogout()}
+            >
               <LogOut className="h-4 w-4" />
               {dict.admin.logout}
             </Button>

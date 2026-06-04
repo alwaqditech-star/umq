@@ -43,13 +43,18 @@ export default function AdminAccountPage() {
     const confirm = String(form.get("confirm"));
     if (newPassword !== confirm) {
       setError(
-        locale === "ar" ? "كلمتا المرور غير متطابقتين" : "Passwords do not match",
+        locale === "ar"
+          ? "كلمتا المرور غير متطابقتين"
+          : "Passwords do not match",
       );
       setPwLoading(false);
       return;
     }
     try {
-      const result = await api.auth.changePassword(currentPassword, newPassword);
+      const result = await api.auth.changePassword(
+        currentPassword,
+        newPassword,
+      );
       setMessage(result.message);
       setTimeout(() => router.push(localePath(locale, "/login")), 1500);
     } catch (err) {
@@ -76,7 +81,10 @@ export default function AdminAccountPage() {
         <h2 className="text-lg font-semibold">
           {locale === "ar" ? "تغيير كلمة المرور" : "Change password"}
         </h2>
-        <form onSubmit={handleChangePassword} className="mt-4 max-w-md space-y-4">
+        <form
+          onSubmit={handleChangePassword}
+          className="mt-4 max-w-md space-y-4"
+        >
           <Input
             name="currentPassword"
             type="password"
@@ -119,7 +127,9 @@ export default function AdminAccountPage() {
               await loadSessions();
             }}
           >
-            {locale === "ar" ? "إنهاء الجلسات الأخرى" : "Sign out other devices"}
+            {locale === "ar"
+              ? "إنهاء الجلسات الأخرى"
+              : "Sign out other devices"}
           </Button>
         </div>
         {loadingSessions ? (
@@ -135,7 +145,8 @@ export default function AdminAccountPage() {
               >
                 <div>
                   <p className="font-medium">
-                    {s.userAgent ?? (locale === "ar" ? "غير معروف" : "Unknown device")}
+                    {s.userAgent ??
+                      (locale === "ar" ? "غير معروف" : "Unknown device")}
                     {s.current && (
                       <span className="ms-2 rounded bg-accent/15 px-2 py-0.5 text-xs text-accent">
                         {locale === "ar" ? "الحالية" : "Current"}
@@ -143,7 +154,8 @@ export default function AdminAccountPage() {
                     )}
                   </p>
                   <p className="text-foreground-muted">
-                    {s.ipAddress ?? "—"} · {new Date(s.createdAt).toLocaleString()}
+                    {s.ipAddress ?? "—"} ·{" "}
+                    {new Date(s.createdAt).toLocaleString()}
                   </p>
                 </div>
                 {!s.current && (

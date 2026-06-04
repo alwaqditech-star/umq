@@ -9,19 +9,74 @@ const prisma = new PrismaClient();
 
 const PERMISSIONS = [
   { slug: "users:read", name: "Read Users", module: "users", action: "read" },
-  { slug: "users:create", name: "Create Users", module: "users", action: "create" },
-  { slug: "users:update", name: "Update Users", module: "users", action: "update" },
-  { slug: "users:delete", name: "Delete Users", module: "users", action: "delete" },
+  {
+    slug: "users:create",
+    name: "Create Users",
+    module: "users",
+    action: "create",
+  },
+  {
+    slug: "users:update",
+    name: "Update Users",
+    module: "users",
+    action: "update",
+  },
+  {
+    slug: "users:delete",
+    name: "Delete Users",
+    module: "users",
+    action: "delete",
+  },
   { slug: "roles:read", name: "Read Roles", module: "roles", action: "read" },
-  { slug: "roles:manage", name: "Manage Roles", module: "roles", action: "manage" },
-  { slug: "services:read", name: "Read Services", module: "services", action: "read" },
-  { slug: "services:manage", name: "Manage Services", module: "services", action: "manage" },
-  { slug: "projects:read", name: "Read Projects", module: "projects", action: "read" },
-  { slug: "projects:manage", name: "Manage Projects", module: "projects", action: "manage" },
+  {
+    slug: "roles:manage",
+    name: "Manage Roles",
+    module: "roles",
+    action: "manage",
+  },
+  {
+    slug: "services:read",
+    name: "Read Services",
+    module: "services",
+    action: "read",
+  },
+  {
+    slug: "services:manage",
+    name: "Manage Services",
+    module: "services",
+    action: "manage",
+  },
+  {
+    slug: "projects:read",
+    name: "Read Projects",
+    module: "projects",
+    action: "read",
+  },
+  {
+    slug: "projects:manage",
+    name: "Manage Projects",
+    module: "projects",
+    action: "manage",
+  },
   { slug: "blog:read", name: "Read Blog", module: "blog", action: "read" },
-  { slug: "blog:manage", name: "Manage Blog", module: "blog", action: "manage" },
-  { slug: "settings:manage", name: "Manage Settings", module: "settings", action: "manage" },
-  { slug: "audit:read", name: "Read Audit Logs", module: "audit", action: "read" },
+  {
+    slug: "blog:manage",
+    name: "Manage Blog",
+    module: "blog",
+    action: "manage",
+  },
+  {
+    slug: "settings:manage",
+    name: "Manage Settings",
+    module: "settings",
+    action: "manage",
+  },
+  {
+    slug: "audit:read",
+    name: "Read Audit Logs",
+    module: "audit",
+    action: "read",
+  },
   { slug: "cms:read", name: "Read CMS", module: "cms", action: "read" },
   { slug: "cms:manage", name: "Manage CMS", module: "cms", action: "manage" },
 ] as const;
@@ -70,7 +125,9 @@ async function main() {
     },
   });
 
-  await prisma.rolePermission.deleteMany({ where: { roleId: superAdminRole.id } });
+  await prisma.rolePermission.deleteMany({
+    where: { roleId: superAdminRole.id },
+  });
   await assignPermissions(superAdminRole.id, allSlugs);
 
   const adminRole = await prisma.role.upsert({
@@ -348,7 +405,9 @@ async function main() {
     },
   });
 
-  const adminUser = await prisma.user.findUnique({ where: { email: "admin@umq.sa" } });
+  const adminUser = await prisma.user.findUnique({
+    where: { email: "admin@umq.sa" },
+  });
 
   const blogCoverMediaId = "11111111-1111-4111-8111-111111111101";
   const blogCoverUrl =

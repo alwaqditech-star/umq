@@ -83,9 +83,7 @@ export class ProjectsService {
       where: {
         deletedAt: null,
         status: ContentStatus.PUBLISHED,
-        ...(category
-          ? { category: { slug: category, deletedAt: null } }
-          : {}),
+        ...(category ? { category: { slug: category, deletedAt: null } } : {}),
       },
       include: { category: true, coverMedia: true },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],

@@ -4,13 +4,13 @@
 
 ## الموقع العام
 
-| عنصر | الحالة |
-|------|--------|
-| زر Login في Header | ✅ **محذوف** |
-| زر Dashboard في Header | ✅ **محذوف** |
-| `PublicNavAuth` | ✅ **محذوف** |
-| رابط Careers | ✅ **محذوف** |
-| بوابة Customer | ✅ **محذوفة** بالكامل |
+| عنصر                   | الحالة                |
+| ---------------------- | --------------------- |
+| زر Login في Header     | ✅ **محذوف**          |
+| زر Dashboard في Header | ✅ **محذوف**          |
+| `PublicNavAuth`        | ✅ **محذوف**          |
+| رابط Careers           | ✅ **محذوف**          |
+| بوابة Customer         | ✅ **محذوفة** بالكامل |
 
 الزوار يرون فقط: Home, About, Services, Projects, Blog, Contact.
 

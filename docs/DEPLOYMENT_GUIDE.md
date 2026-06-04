@@ -10,15 +10,15 @@
 
 Copy `.env.example` to `.env` and set:
 
-| Variable | Production |
-|----------|------------|
-| `DATABASE_URL` | MySQL connection string |
-| `JWT_SECRET` | Strong random secret |
-| `AUTH_COOKIE_SECURE` | `true` |
-| `CORS_ORIGIN` | `https://your-domain.com` |
-| `WEB_ORIGIN` | Public site URL |
+| Variable              | Production                              |
+| --------------------- | --------------------------------------- |
+| `DATABASE_URL`        | MySQL connection string                 |
+| `JWT_SECRET`          | Strong random secret                    |
+| `AUTH_COOKIE_SECURE`  | `true`                                  |
+| `CORS_ORIGIN`         | `https://your-domain.com`               |
+| `WEB_ORIGIN`          | Public site URL                         |
 | `NEXT_PUBLIC_API_URL` | `/api/v1` (same-origin) or full API URL |
-| `API_INTERNAL_URL` | Internal Nest URL for SSR |
+| `API_INTERNAL_URL`    | Internal Nest URL for SSR               |
 
 ## Build
 

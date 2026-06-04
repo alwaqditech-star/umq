@@ -24,11 +24,15 @@ export function MediaCoverInput({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const displaySrc = previewUrl ? resolveMediaUrl(previewUrl) ?? previewUrl : undefined;
+  const displaySrc = previewUrl
+    ? (resolveMediaUrl(previewUrl) ?? previewUrl)
+    : undefined;
 
   const handleFile = async (file: File) => {
     if (!file.type.startsWith("image/")) {
-      setError(locale === "ar" ? "يرجى اختيار صورة." : "Please choose an image file.");
+      setError(
+        locale === "ar" ? "يرجى اختيار صورة." : "Please choose an image file.",
+      );
       return;
     }
     setError(null);
@@ -75,7 +79,9 @@ export function MediaCoverInput({
         <div className="flex max-w-sm flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-surface/50 px-4 py-8 text-center">
           <ImagePlus className="h-8 w-8 text-foreground-muted" aria-hidden />
           <p className="text-xs text-foreground-muted">
-            {locale === "ar" ? "PNG, JPG, WebP — حتى 10MB" : "PNG, JPG, WebP — up to 10MB"}
+            {locale === "ar"
+              ? "PNG, JPG, WebP — حتى 10MB"
+              : "PNG, JPG, WebP — up to 10MB"}
           </p>
         </div>
       )}

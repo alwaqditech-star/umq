@@ -30,7 +30,9 @@ export function ResetPasswordForm() {
     const confirm = String(form.get("confirm"));
     if (newPassword !== confirm) {
       setError(
-        locale === "ar" ? "كلمتا المرور غير متطابقتين" : "Passwords do not match",
+        locale === "ar"
+          ? "كلمتا المرور غير متطابقتين"
+          : "Passwords do not match",
       );
       setLoading(false);
       return;
@@ -87,7 +89,10 @@ export function ResetPasswordForm() {
           minLength={8}
         />
         {message && (
-          <p className="text-sm text-green-700 dark:text-green-400" role="status">
+          <p
+            className="text-sm text-green-700 dark:text-green-400"
+            role="status"
+          >
             {message}
           </p>
         )}

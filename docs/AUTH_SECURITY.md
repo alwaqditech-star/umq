@@ -3,36 +3,42 @@
 ## Implemented
 
 ### Tokens (no localStorage)
+
 - `umq_access` — JWT, HttpOnly, SameSite=Strict, short-lived (default 15m)
 - `umq_refresh` — opaque token, HttpOnly, rotation on every refresh
 - Zustand persists **user profile only** (`umq-auth`), never tokens
 - `umq_admin_home` — non-secret path hint for middleware (not HttpOnly)
 
 ### API (`/api/v1/auth`)
-| Endpoint | Description |
-|----------|-------------|
-| `POST /login` | Sets cookies; `rememberMe` → 30d refresh |
-| `POST /refresh` | Reads refresh cookie; rotates session |
-| `POST /logout` | Revokes refresh; clears cookies |
-| `GET /me` | Current user (JWT from cookie or Bearer) |
-| `POST /forgot-password` | Reset token in DB; dev returns `resetUrl` |
-| `POST /reset-password` | Policy + revoke all sessions |
-| `POST /change-password` | Auth required; clears cookies after |
-| `GET /sessions` | Active refresh tokens |
-| `DELETE /sessions/:id` | Revoke one session |
-| `POST /sessions/revoke-others` | Keep current device only |
+
+| Endpoint                       | Description                               |
+| ------------------------------ | ----------------------------------------- |
+| `POST /login`                  | Sets cookies; `rememberMe` → 30d refresh  |
+| `POST /refresh`                | Reads refresh cookie; rotates session     |
+| `POST /logout`                 | Revokes refresh; clears cookies           |
+| `GET /me`                      | Current user (JWT from cookie or Bearer)  |
+| `POST /forgot-password`        | Reset token in DB; dev returns `resetUrl` |
+| `POST /reset-password`         | Policy + revoke all sessions              |
+| `POST /change-password`        | Auth required; clears cookies after       |
+| `GET /sessions`                | Active refresh tokens                     |
+| `DELETE /sessions/:id`         | Revoke one session                        |
+| `POST /sessions/revoke-others` | Keep current device only                  |
 
 ### Account lockout
+
 - After `AUTH_MAX_FAILED_LOGINS` (default 5) → `lockedUntil` for `AUTH_LOCKOUT_MINUTES` (default 15)
 
 ### Password policy (`@umq/shared`)
+
 - Min 8 chars, upper, lower, digit
 
 ### Hardening
+
 - `helmet`, `cookie-parser`, rate limiting (`@nestjs/throttler`)
 - Stricter limits on login / forgot / reset
 
 ### Web
+
 - Next.js rewrite: `/api/v1` → NestJS (`API_INTERNAL_URL`)
 - Pages: login (remember me), forgot, **reset-password**, **admin/account** (change password + sessions)
 

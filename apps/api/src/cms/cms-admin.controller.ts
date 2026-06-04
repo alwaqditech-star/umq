@@ -25,7 +25,9 @@ export class TestimonialsAdminController {
 
   @Post()
   create(@Body() body: Record<string, unknown>) {
-    return this.cms.createTestimonial(body as Parameters<CmsService["createTestimonial"]>[0]);
+    return this.cms.createTestimonial(
+      body as Parameters<CmsService["createTestimonial"]>[0],
+    );
   }
 
   @Patch(":id")
@@ -144,7 +146,9 @@ export class WebsiteSectionsAdminController {
 
   @Post("content")
   upsertContent(@Body() body: Record<string, unknown>) {
-    return this.cms.upsertSection(body as Parameters<CmsService["upsertSection"]>[0]);
+    return this.cms.upsertSection(
+      body as Parameters<CmsService["upsertSection"]>[0],
+    );
   }
 
   @Delete("content/:id")

@@ -91,7 +91,10 @@ export function HeroSection({
           </motion.div>
         </motion.div>
       </div>
-      <div className="footer-gradient-top absolute inset-x-0 bottom-0 h-px opacity-50" aria-hidden />
+      <div
+        className="footer-gradient-top absolute inset-x-0 bottom-0 h-px opacity-50"
+        aria-hidden
+      />
     </section>
   );
 }

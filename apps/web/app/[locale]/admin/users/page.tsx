@@ -56,12 +56,27 @@ export default function AdminUsersPage() {
   }
 
   const fields = [
-    { name: "firstName", label: locale === "ar" ? "الاسم الأول" : "First name", required: true },
-    { name: "lastName", label: locale === "ar" ? "اسم العائلة" : "Last name", required: true },
+    {
+      name: "firstName",
+      label: locale === "ar" ? "الاسم الأول" : "First name",
+      required: true,
+    },
+    {
+      name: "lastName",
+      label: locale === "ar" ? "اسم العائلة" : "Last name",
+      required: true,
+    },
     { name: "email", label: "Email", type: "email" as const, required: true },
     ...(editing
       ? []
-      : [{ name: "password", label: locale === "ar" ? "كلمة المرور" : "Password", type: "password" as const, required: true }]),
+      : [
+          {
+            name: "password",
+            label: locale === "ar" ? "كلمة المرور" : "Password",
+            type: "password" as const,
+            required: true,
+          },
+        ]),
     {
       name: "roleId",
       label: locale === "ar" ? "الدور" : "Role",
@@ -83,9 +98,17 @@ export default function AdminUsersPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between">
-        <h2 className="text-2xl font-bold">{locale === "ar" ? "المستخدمون" : "Users"}</h2>
+        <h2 className="text-2xl font-bold">
+          {locale === "ar" ? "المستخدمون" : "Users"}
+        </h2>
         {canCreate && (
-          <Button size="sm" onClick={() => { setEditing(null); setOpen(true); }}>
+          <Button
+            size="sm"
+            onClick={() => {
+              setEditing(null);
+              setOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4" />
             {locale === "ar" ? "إضافة مستخدم" : "Add user"}
           </Button>
@@ -108,7 +131,9 @@ export default function AdminUsersPage() {
               <TableCell>{row.email}</TableCell>
               <TableCell>{row.role}</TableCell>
               <TableCell>
-                <Badge variant={row.status === "active" ? "success" : "default"}>
+                <Badge
+                  variant={row.status === "active" ? "success" : "default"}
+                >
                   {row.status}
                 </Badge>
               </TableCell>
@@ -116,12 +141,26 @@ export default function AdminUsersPage() {
                 <TableCell>
                   <div className="flex gap-2">
                     {canUpdate && (
-                      <button type="button" className="rounded-lg p-2 hover:bg-accent/10" onClick={() => { setEditing(row); setOpen(true); }}>
+                      <button
+                        type="button"
+                        className="rounded-lg p-2 hover:bg-accent/10"
+                        onClick={() => {
+                          setEditing(row);
+                          setOpen(true);
+                        }}
+                      >
                         <Pencil className="h-4 w-4" />
                       </button>
                     )}
                     {canDelete && (
-                      <button type="button" className="rounded-lg p-2 text-red-600 hover:bg-red-500/10" onClick={async () => { await api.users.delete(row.id); await load(); }}>
+                      <button
+                        type="button"
+                        className="rounded-lg p-2 text-red-600 hover:bg-red-500/10"
+                        onClick={async () => {
+                          await api.users.delete(row.id);
+                          await load();
+                        }}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     )}
@@ -142,9 +181,12 @@ export default function AdminUsersPage() {
             {
               ...(editing
                 ? {
-                    firstName: editing.firstName ?? editing.name.split(" ")[0] ?? "",
+                    firstName:
+                      editing.firstName ?? editing.name.split(" ")[0] ?? "",
                     lastName:
-                      editing.lastName ?? editing.name.split(" ").slice(1).join(" ") ?? "",
+                      editing.lastName ??
+                      editing.name.split(" ").slice(1).join(" ") ??
+                      "",
                     email: editing.email,
                     roleId: editing.roleId ?? "",
                     isActive: editing.status === "active" ? "true" : "false",

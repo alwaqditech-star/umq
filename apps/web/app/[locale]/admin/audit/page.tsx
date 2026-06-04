@@ -47,7 +47,10 @@ export default function AdminAuditPage() {
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-foreground-muted">
+                <td
+                  colSpan={4}
+                  className="px-4 py-8 text-center text-foreground-muted"
+                >
                   {locale === "ar" ? "لا سجلات بعد" : "No audit entries yet"}
                 </td>
               </tr>
@@ -57,9 +60,7 @@ export default function AdminAuditPage() {
                   <td className="px-4 py-3 whitespace-nowrap">
                     {new Date(row.createdAt).toLocaleString()}
                   </td>
-                  <td className="px-4 py-3">
-                    {row.user?.email ?? "—"}
-                  </td>
+                  <td className="px-4 py-3">{row.user?.email ?? "—"}</td>
                   <td className="px-4 py-3">{row.action}</td>
                   <td className="px-4 py-3">
                     {row.entity}

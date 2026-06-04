@@ -203,7 +203,8 @@ const en: typeof ar = {
     projectsDesc: "Selected work we're proud to deliver with our partners.",
     blogKicker: "Insights",
     blogTitle: "Blog",
-    blogDesc: "Perspectives from the UMQ team on technology and digital products.",
+    blogDesc:
+      "Perspectives from the UMQ team on technology and digital products.",
   },
   admin: {
     dashboard: "Overview",
@@ -228,7 +229,8 @@ const en: typeof ar = {
     remember: "Remember me",
     submit: "Sign in",
     forgotTitle: "Forgot password",
-    forgotSubtitle: "Enter your email — reset links will work when the API is enabled",
+    forgotSubtitle:
+      "Enter your email — reset links will work when the API is enabled",
     sendResetLink: "Send reset link",
     backToLogin: "Back to sign in",
     requestFailed: "Request failed. Try again later",

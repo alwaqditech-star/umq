@@ -147,7 +147,13 @@ export default function AdminCategoriesPage() {
           { name: "nameAr", label: "AR", required: true },
           { name: "nameEn", label: "EN", required: true },
           ...(tab === "projects"
-            ? [{ name: "order", label: locale === "ar" ? "الترتيب" : "Order", type: "number" as const }]
+            ? [
+                {
+                  name: "order",
+                  label: locale === "ar" ? "الترتيب" : "Order",
+                  type: "number" as const,
+                },
+              ]
             : []),
         ]}
         initialValues={{

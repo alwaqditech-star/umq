@@ -23,9 +23,10 @@ export function AdminDashboardView({ locale }: { locale: Locale }) {
   const [stats, setStats] = useState<Partial<Record<StatKey, number>>>({});
   const [loading, setLoading] = useState(true);
 
-  const quickLinks = filterNavByPermissions(adminNavItems, hasPermission).filter(
-    (item) => item.href !== "/admin" && item.href !== "/admin/account",
-  );
+  const quickLinks = filterNavByPermissions(
+    adminNavItems,
+    hasPermission,
+  ).filter((item) => item.href !== "/admin" && item.href !== "/admin/account");
 
   useEffect(() => {
     let cancelled = false;
@@ -121,7 +122,9 @@ export function AdminDashboardView({ locale }: { locale: Locale }) {
       ) : (
         <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {statCards
-            .filter((card) => hasPermission(card.perm) && card.value !== undefined)
+            .filter(
+              (card) => hasPermission(card.perm) && card.value !== undefined,
+            )
             .map((card) => (
               <Link key={card.key} href={localePath(locale, card.href)}>
                 <StatCard

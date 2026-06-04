@@ -4,28 +4,30 @@
 
 ## ملخص سريع
 
-| المرحلة | الحالة | ملاحظات |
-|---------|--------|---------|
-| 1 — Audit | ✅ | `PROJECT_AUDIT.md` |
-| 2 — Database | 🟡 | MySQL + Prisma + ترحيل `omq_db` للإعدادات |
-| 3 — Authentication | 🟡 | Login/refresh/JWT؛ ناقص: reset password، HttpOnly |
-| 4 — Authorization | 🟢 | RBAC + حماية API + واجهة حسب الدور (هذه الجولة) |
-| 5 — Dashboards | 🟢 | لوحة مخصصة لكل دور + إحصائيات حسب الصلاحية |
-| 6 — Features | 🟢 | نماذج إدارة كاملة + CRUD API + contacts inbox + apply من الموقع |
-| 7 — UI | 🟡 | Navbar حسب الجلسة؛ ناقص: تحسينات responsive أوسع |
-| 8 — Security | 🔴 | rate limit، helmet، CSRF |
-| 9 — Testing | 🔴 | unit/E2E في CI |
-| 10 — Production | 🔴 | deploy + monitoring |
+| المرحلة            | الحالة | ملاحظات                                                         |
+| ------------------ | ------ | --------------------------------------------------------------- |
+| 1 — Audit          | ✅     | `PROJECT_AUDIT.md`                                              |
+| 2 — Database       | 🟡     | MySQL + Prisma + ترحيل `omq_db` للإعدادات                       |
+| 3 — Authentication | 🟡     | Login/refresh/JWT؛ ناقص: reset password، HttpOnly               |
+| 4 — Authorization  | 🟢     | RBAC + حماية API + واجهة حسب الدور (هذه الجولة)                 |
+| 5 — Dashboards     | 🟢     | لوحة مخصصة لكل دور + إحصائيات حسب الصلاحية                      |
+| 6 — Features       | 🟢     | نماذج إدارة كاملة + CRUD API + contacts inbox + apply من الموقع |
+| 7 — UI             | 🟡     | Navbar حسب الجلسة؛ ناقص: تحسينات responsive أوسع                |
+| 8 — Security       | 🔴     | rate limit، helmet، CSRF                                        |
+| 9 — Testing        | 🔴     | unit/E2E في CI                                                  |
+| 10 — Production    | 🔴     | deploy + monitoring                                             |
 
 ---
 
 ## ما اكتمل في جولة RBAC (الواجهات والأدوار)
 
 ### Backend
+
 - رفض تسجيل الدخول لحساب بلا صلاحية لوحة التحكم (`canAccessAdminPanel`).
 - CRUD إداري: `admin/projects`, `admin/blog/posts`, `admin/jobs` مع `*:manage`.
 
 ### Frontend
+
 - **الموقع العام:** لا يظهر «لوحة التحكم» إلا للموظف المسجل؛ الزائر يرى «تسجيل الدخول» فقط.
 - **بعد Login:** توجيه حسب الدور (`hr` → الطلبات، `editor` → الخدمات، …).
 - **Middleware + cookies:** `umq_access` + `umq_admin_home`.
@@ -36,12 +38,12 @@
 
 ### حسابات الاختبار (كلمة المرور: `ChangeMe123!`)
 
-| الدور | البريد | الصفحة الافتراضية |
-|-------|--------|-------------------|
-| super-admin | admin@umq.sa | `/admin` |
-| editor | editor@umq.sa | `/admin/services` |
-| hr | hr@umq.sa | `/admin/applications` |
-| viewer | viewer@umq.sa | `/admin` (قراءة فقط) |
+| الدور       | البريد        | الصفحة الافتراضية     |
+| ----------- | ------------- | --------------------- |
+| super-admin | admin@umq.sa  | `/admin`              |
+| editor      | editor@umq.sa | `/admin/services`     |
+| hr          | hr@umq.sa     | `/admin/applications` |
+| viewer      | viewer@umq.sa | `/admin` (قراءة فقط)  |
 
 ---
 

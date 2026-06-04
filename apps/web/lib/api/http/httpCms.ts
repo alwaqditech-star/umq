@@ -8,8 +8,7 @@ const testimonialsCrud = createHttpCrud<Testimonial>(
 );
 
 export const projectCategoriesApi = {
-  list: () =>
-    apiFetch<Category[]>("/admin/project-categories", { auth: true }),
+  list: () => apiFetch<Category[]>("/admin/project-categories", { auth: true }),
   create: (data: Omit<Category, "id">) =>
     apiFetch<Category>("/admin/project-categories", {
       method: "POST",
@@ -58,10 +57,11 @@ export const cmsApi = {
   team: createHttpCrud("/admin/team-members", "/team-members"),
   partners: createHttpCrud("/admin/partners", "/partners"),
   settings: {
-    list: () => apiFetch<{ key: string; value: unknown; group: string }[]>(
-      "/admin/settings",
-      { auth: true },
-    ),
+    list: () =>
+      apiFetch<{ key: string; value: unknown; group: string }[]>(
+        "/admin/settings",
+        { auth: true },
+      ),
     upsert: (key: string, value: unknown, group?: string) =>
       apiFetch("/admin/settings", {
         method: "POST",

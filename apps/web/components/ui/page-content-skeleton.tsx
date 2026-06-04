@@ -1,6 +1,10 @@
 export function PageContentSkeleton() {
   return (
-    <div className="container-umq animate-pulse py-14 sm:py-20" aria-busy aria-label="Loading">
+    <div
+      className="container-umq animate-pulse py-14 sm:py-20"
+      aria-busy
+      aria-label="Loading"
+    >
       <div className="mx-auto max-w-3xl space-y-4">
         <div className="h-4 w-24 rounded-lg bg-border/80" />
         <div className="h-12 w-3/4 max-w-md rounded-xl bg-border/80" />

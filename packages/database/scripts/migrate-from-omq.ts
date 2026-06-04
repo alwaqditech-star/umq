@@ -6,8 +6,7 @@ import { PrismaClient } from "@prisma/client";
 import mysql from "mysql2/promise";
 
 const LEGACY_URL =
-  process.env.LEGACY_DATABASE_URL ??
-  "mysql://root@127.0.0.1:3306/omq_db";
+  process.env.LEGACY_DATABASE_URL ?? "mysql://root@127.0.0.1:3306/omq_db";
 
 function parseMysqlUrl(url: string) {
   const u = new URL(url.replace(/^mysql:\/\//, "http://"));
@@ -26,7 +25,11 @@ async function main() {
 
   try {
     const [rows] = await legacy.query<
-      { setting_key: string; setting_value: string | null; description: string | null }[]
+      {
+        setting_key: string;
+        setting_value: string | null;
+        description: string | null;
+      }[]
     >(
       "SELECT setting_key, setting_value, description FROM general_settings ORDER BY id",
     );
@@ -52,7 +55,9 @@ async function main() {
       });
     }
 
-    console.log(`Migrated ${rows.length} setting(s) from omq_db.general_settings → settings.`);
+    console.log(
+      `Migrated ${rows.length} setting(s) from omq_db.general_settings → settings.`,
+    );
   } finally {
     await legacy.end();
     await prisma.$disconnect();
