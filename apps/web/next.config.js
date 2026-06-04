@@ -41,8 +41,12 @@ const apiImagePort = (() => {
   }
 })();
 
+/** Monorepo: include workspace packages in Vercel serverless traces */
+const monorepoRoot = path.join(__dirname, "../..");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  outputFileTracingRoot: monorepoRoot,
   images: {
     remotePatterns: [
       { protocol: "http", hostname: "127.0.0.1", port: apiImagePort, pathname: "/**" },
@@ -50,8 +54,7 @@ const nextConfig = {
       { protocol: "https", hostname: "**", pathname: "/**" },
     ],
   },
-  transpilePackages: ["framer-motion"],
-  serverExternalPackages: ["@umq/shared"],
+  transpilePackages: ["framer-motion", "@umq/shared"],
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
     staleTimes: {
