@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { FastNavLink } from "@/components/navigation/fast-nav-link";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -50,12 +52,23 @@ export function Navbar({ locale }: { locale: Locale }) {
       )}
     >
       <div className="container-umq flex h-16 items-center justify-between gap-4">
-        <Link
+        <FastNavLink
           href={localePath(locale, "")}
-          className="text-xl font-bold tracking-tight text-gradient"
+          matchPrefix={false}
+          className="flex shrink-0 items-center gap-2.5"
         >
-          {dict.brand}
-        </Link>
+          <Image
+            src="/brand-logo.jpg"
+            alt={dict.brandFull}
+            width={40}
+            height={40}
+            className="h-9 w-9 rounded-lg object-contain"
+            priority
+          />
+          <span className="text-xl font-bold tracking-tight text-gradient">
+            {dict.brand}
+          </span>
+        </FastNavLink>
 
         <nav
           className="hidden items-center gap-1 lg:flex"
@@ -67,24 +80,21 @@ export function Navbar({ locale }: { locale: Locale }) {
               pathname === href ||
               (path !== "" && pathname.startsWith(href));
             return (
-              <Link
+              <FastNavLink
                 key={key}
                 href={href}
                 className={cn(
                   "relative rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   active
-                    ? "text-primary"
+                    ? "font-semibold text-nav-active"
                     : "text-foreground-muted hover:text-foreground",
                 )}
               >
                 {dict.nav[key as keyof typeof dict.nav]}
                 {active && (
-                  <motion.span
-                    layoutId="nav-indicator"
-                    className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-accent"
-                  />
+                  <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-accent" />
                 )}
-              </Link>
+              </FastNavLink>
             );
           })}
         </nav>
@@ -102,12 +112,12 @@ export function Navbar({ locale }: { locale: Locale }) {
               <Sun className="h-5 w-5" />
             )}
           </button>
-          <Link
+          <FastNavLink
             href={localePath(locale, "/contact")}
             className="hidden rounded-xl bg-primary px-4 py-2 text-xs font-medium text-light shadow-sm transition-all hover:bg-secondary hover:shadow-md sm:inline-block"
           >
             {dict.cta.contactUs}
-          </Link>
+          </FastNavLink>
           <Link
             href={switchPath}
             className="hidden rounded-xl border border-border px-3 py-2 text-xs font-medium text-foreground-muted transition-colors hover:border-accent/40 md:inline-block"
@@ -180,28 +190,28 @@ function AnimatePresenceMobileNav({
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.04 }}
                 >
-                  <Link
+                  <FastNavLink
                     href={href}
-                    onClick={onClose}
+                    onNavigate={onClose}
                     className={cn(
                       "block rounded-xl px-4 py-3 text-sm font-medium transition-colors",
                       active
-                        ? "bg-accent/15 text-primary ring-1 ring-accent/20"
+                        ? "bg-accent/15 font-semibold text-nav-active ring-1 ring-accent/20"
                         : "text-foreground-muted hover:bg-accent/10",
                     )}
                   >
                     {dict.nav[key as keyof typeof dict.nav]}
-                  </Link>
+                  </FastNavLink>
                 </motion.div>
               );
             })}
-            <Link
+            <FastNavLink
               href={localePath(locale, "/contact")}
-              onClick={onClose}
+              onNavigate={onClose}
               className="mt-2 block rounded-xl bg-primary px-4 py-3 text-center text-sm font-medium text-light"
             >
               {dict.cta.contactUs}
-            </Link>
+            </FastNavLink>
           </div>
         </motion.nav>
       )}

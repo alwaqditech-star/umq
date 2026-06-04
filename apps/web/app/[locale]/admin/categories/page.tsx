@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useAdminList } from "@/hooks/use-admin-list";
+import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { api } from "@/lib/api";
 import type { Category } from "@/lib/api/types";
 import { AdminFormModal } from "@/components/admin/form-modal";
@@ -14,7 +16,6 @@ export default function AdminCategoriesPage() {
   const locale = useLocale();
   const hasPermission = useAuthStore((s) => s.hasPermission);
   const [tab, setTab] = useState<Tab>("projects");
-  const [rows, setRows] = useState<Category[]>([]);
   const [editing, setEditing] = useState<Category | null>(null);
   const [open, setOpen] = useState(false);
 
@@ -25,13 +26,8 @@ export default function AdminCategoriesPage() {
     (tab === "projects" && hasPermission("projects:manage")) ||
     (tab === "blog" && hasPermission("blog:manage"));
 
-  const load = useCallback(async () => {
-    setRows(await apiFor(tab).list());
-  }, [tab]);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const load = useCallback(() => apiFor(tab).list(), [tab]);
+  const { items: rows, loading, reload } = useAdminList(load);
 
   const tabs: { id: Tab; label: string; show: boolean }[] = [
     {
@@ -45,6 +41,10 @@ export default function AdminCategoriesPage() {
       show: hasPermission("blog:manage"),
     },
   ];
+
+  if (loading) {
+    return <AdminPageSkeleton />;
+  }
 
   return (
     <div className="space-y-6">
@@ -79,11 +79,17 @@ export default function AdminCategoriesPage() {
       </div>
       <div className="overflow-x-auto rounded-2xl border border-border">
         <table className="w-full text-sm">
-          <thead className="bg-surface">
+          <thead className="border-b border-border bg-table-header">
             <tr>
-              <th className="px-4 py-3 text-start">slug</th>
-              <th className="px-4 py-3 text-start">AR</th>
-              <th className="px-4 py-3 text-start">EN</th>
+              <th className="px-4 py-3 text-start text-xs font-semibold uppercase tracking-wide text-table-header">
+                slug
+              </th>
+              <th className="px-4 py-3 text-start text-xs font-semibold uppercase tracking-wide text-table-header">
+                AR
+              </th>
+              <th className="px-4 py-3 text-start text-xs font-semibold uppercase tracking-wide text-table-header">
+                EN
+              </th>
               {canManage && <th className="px-4 py-3" />}
             </tr>
           </thead>
@@ -110,7 +116,7 @@ export default function AdminCategoriesPage() {
                       variant="danger"
                       onClick={async () => {
                         await apiFor(tab).delete(row.id);
-                        await load();
+                        await reload();
                       }}
                     >
                       {locale === "ar" ? "حذف" : "Delete"}
@@ -159,7 +165,7 @@ export default function AdminCategoriesPage() {
           };
           if (editing) await apiFor(tab).update(editing.id, payload);
           else await apiFor(tab).create(payload);
-          await load();
+          await reload();
         }}
       />
     </div>

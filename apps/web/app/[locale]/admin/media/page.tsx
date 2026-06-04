@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { useAdminList } from "@/hooks/use-admin-list";
+import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n/use-locale";
@@ -17,17 +19,14 @@ type MediaItem = {
 export default function AdminMediaPage() {
   const locale = useLocale();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [items, setItems] = useState<MediaItem[]>([]);
   const [folder, setFolder] = useState("general");
   const [uploading, setUploading] = useState(false);
 
-  const load = useCallback(async () => {
-    setItems((await api.cms.media.list()) as MediaItem[]);
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const load = useCallback(
+    () => api.cms.media.list() as Promise<MediaItem[]>,
+    [],
+  );
+  const { items, loading, reload } = useAdminList(load);
 
   const handleUpload = async () => {
     const file = fileRef.current?.files?.[0];
@@ -39,11 +38,15 @@ export default function AdminMediaPage() {
       fd.append("folder", folder);
       await api.cms.media.upload(fd);
       if (fileRef.current) fileRef.current.value = "";
-      await load();
+      await reload();
     } finally {
       setUploading(false);
     }
   };
+
+  if (loading) {
+    return <AdminPageSkeleton />;
+  }
 
   return (
     <div className="space-y-8">
@@ -100,7 +103,7 @@ export default function AdminMediaPage() {
               variant="danger"
               onClick={async () => {
                 await api.cms.media.delete(item.id);
-                await load();
+                await reload();
               }}
             >
               {locale === "ar" ? "حذف" : "Delete"}

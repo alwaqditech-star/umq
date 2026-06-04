@@ -20,6 +20,14 @@
   --color-foreground-muted: #2c516e;
   --color-border: rgb(154 191 196 / 0.38);
 
+  /* Semantic surfaces (light mode) */
+  --color-subtle: rgb(244 250 251 / 0.85);
+  --color-table-header-bg: rgb(154 191 196 / 0.2);
+  --color-table-header-text: #2c516e;
+  --color-nav-active: #0f244d;
+  --color-chip-bg: rgb(15 36 77 / 0.08);
+  --color-chip-text: #0f244d;
+
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-arabic: var(--font-arabic), ui-sans-serif, system-ui, sans-serif;
 
@@ -42,6 +50,12 @@
   --color-foreground: #f4fafb;
   --color-foreground-muted: #9abfc4;
   --color-border: rgb(72 134 149 / 0.25);
+  --color-subtle: rgb(72 134 149 / 0.14);
+  --color-table-header-bg: rgb(72 134 149 / 0.22);
+  --color-table-header-text: #f4fafb;
+  --color-nav-active: #f4fafb;
+  --color-chip-bg: rgb(72 134 149 / 0.2);
+  --color-chip-text: #f4fafb;
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 12px rgb(0 0 0 / 0.35);
   --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.45);
@@ -119,7 +133,12 @@
 
   ::selection {
     background: rgb(72 134 149 / 0.35);
-    color: var(--color-primary);
+    color: var(--color-foreground);
+  }
+
+  [data-theme="dark"] ::selection {
+    background: rgb(72 134 149 / 0.45);
+    color: var(--color-foreground);
   }
 
   :focus-visible {
@@ -129,11 +148,24 @@
 }
 
 @layer utilities {
+  /* Gradient text — must not sit inside transformed ancestors (e.g. motion y) */
   .text-gradient {
+    display: inline;
     background: linear-gradient(135deg, #0f244d 0%, #488695 100%);
     -webkit-background-clip: text;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
     color: transparent;
+  }
+
+  /* Solid readable text in dark mode (clip breaks under CSS transforms) */
+  [data-theme="dark"] .text-gradient,
+  [data-theme="dark"] .text-gradient-hero {
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    -webkit-text-fill-color: var(--color-foreground);
+    color: var(--color-foreground);
   }
 
   .bg-grid {
@@ -198,6 +230,14 @@
     background: rgb(15 36 77 / 0.92);
   }
 
+  [data-theme="dark"] .mesh-glow-a {
+    opacity: 0.55;
+  }
+
+  [data-theme="dark"] .mesh-glow-b {
+    opacity: 0.4;
+  }
+
   .border-glow {
     box-shadow:
       0 0 0 1px rgb(72 134 149 / 0.2),
@@ -252,4 +292,45 @@
   .prose-umq a {
     @apply text-accent underline-offset-4 hover:underline;
   }
+
+  .bg-subtle {
+    background-color: var(--color-subtle);
+  }
+
+  .bg-table-header {
+    background-color: var(--color-table-header-bg);
+  }
+
+  .text-table-header {
+    color: var(--color-table-header-text);
+  }
+
+  .text-nav-active {
+    color: var(--color-nav-active);
+  }
+
+  .bg-chip {
+    background-color: var(--color-chip-bg);
+  }
+
+  .text-chip {
+    color: var(--color-chip-text);
+  }
+}
+
+@keyframes nav-progress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+html.nav-is-pending {
+  cursor: progress;
+}
+
+html.nav-is-pending a {
+  cursor: progress;
 }

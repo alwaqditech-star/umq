@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
+import { useAdminList } from "@/hooks/use-admin-list";
+import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { api } from "@/lib/api";
 import type { Contact } from "@/lib/api/types";
 import { Badge } from "@/components/ui/badge";
@@ -25,11 +27,15 @@ const statuses = [
 export default function AdminContactsPage() {
   const locale = useLocale();
   const canUpdate = useAuthStore((s) => s.hasPermission("users:update"));
-  const [items, setItems] = useState<Contact[]>([]);
+  const load = useCallback(
+    () => api.contacts.listAdmin?.() ?? api.contacts.getAll(),
+    [],
+  );
+  const { items, setItems, loading, reload } = useAdminList(load);
 
-  useEffect(() => {
-    void api.contacts.listAdmin?.().then(setItems);
-  }, []);
+  if (loading) {
+    return <AdminPageSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

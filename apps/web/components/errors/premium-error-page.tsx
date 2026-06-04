@@ -69,8 +69,8 @@ export function PremiumErrorPage({
       <MeshBackground variant="hero" />
       <div className="container-umq relative">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           className="mx-auto max-w-2xl text-center"
         >
           <p className="text-8xl font-bold text-gradient opacity-90">{code}</p>

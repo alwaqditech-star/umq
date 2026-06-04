@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useAdminList } from "@/hooks/use-admin-list";
+import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { api } from "@/lib/api";
 import type { BlogPost } from "@/lib/api/types";
@@ -17,6 +19,7 @@ import {
 } from "@/components/ui/table";
 import { useLocale } from "@/lib/i18n/use-locale";
 import { useAuthStore } from "@/stores/auth-store";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 const blogFields = (locale: "ar" | "en") => [
   { name: "slug", label: "Slug", required: true },
@@ -35,22 +38,29 @@ const blogFields = (locale: "ar" | "en") => [
   { name: "readingTime", label: locale === "ar" ? "وقت القراءة (دقائق)" : "Reading time", type: "number" as const },
   { name: "publishedAt", label: locale === "ar" ? "تاريخ النشر" : "Published at", placeholder: "2026-06-04" },
   { name: "status", label: locale === "ar" ? "الحالة" : "Status", type: "select" as const, options: contentStatusOptions(locale) },
+  {
+    name: "coverMediaId",
+    label: locale === "ar" ? "صورة الغلاف" : "Cover image",
+    type: "image" as const,
+    uploadFolder: "blog",
+  },
 ];
 
 export default function AdminBlogPage() {
   const locale = useLocale();
   const canManage = useAuthStore((s) => s.hasPermission("blog:manage"));
-  const [items, setItems] = useState<BlogPost[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<BlogPost | null>(null);
 
-  const load = useCallback(async () => {
-    setItems(await (api.blog.listAdmin?.() ?? api.blog.getAll()));
-  }, []);
+  const load = useCallback(
+    () => api.blog.listAdmin?.() ?? api.blog.getAll(),
+    [],
+  );
+  const { items, loading, reload } = useAdminList(load);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  if (loading) {
+    return <AdminPageSkeleton />;
+  }
 
   return (
     <div className="space-y-6">
@@ -84,7 +94,7 @@ export default function AdminBlogPage() {
                     <button type="button" className="rounded-lg p-2 hover:bg-accent/10" onClick={() => { setEditing(row); setOpen(true); }}>
                       <Pencil className="h-4 w-4" />
                     </button>
-                    <button type="button" className="rounded-lg p-2 text-red-600 hover:bg-red-500/10" onClick={async () => { await api.blog.delete(row.id); await load(); }}>
+                    <button type="button" className="rounded-lg p-2 text-red-600 hover:bg-red-500/10" onClick={async () => { await api.blog.delete(row.id); await reload(); }}>
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -110,8 +120,17 @@ export default function AdminBlogPage() {
                 readingTime: String(editing.readingTime),
                 publishedAt: editing.publishedAt?.slice(0, 10) ?? "",
                 status: editing.status ?? "draft",
+                coverMediaId: editing.coverMediaId ?? "",
               }
-            : { locale: "ar", status: "published", readingTime: "5" }
+            : { locale: "ar", status: "published", readingTime: "5", coverMediaId: "" }
+        }
+        imagePreviews={
+          editing?.coverImageUrl
+            ? {
+                coverMediaId:
+                  resolveMediaUrl(editing.coverImageUrl) ?? editing.coverImageUrl,
+              }
+            : {}
         }
         locale={locale}
         submitLabel="Save"
@@ -125,10 +144,11 @@ export default function AdminBlogPage() {
             readingTime: Number(values.readingTime || 5),
             publishedAt: values.publishedAt || undefined,
             status: values.status || "draft",
+            coverMediaId: values.coverMediaId?.trim() || null,
           };
           if (editing) await api.blog.update(editing.id, payload);
           else await api.blog.create(payload);
-          await load();
+          await reload();
         }}
       />
     </div>

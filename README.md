@@ -65,8 +65,21 @@ pnpm --filter @umq/database db:seed
 pnpm dev
 ```
 
+**Two terminals (recommended for daily dev):**
+
+```bash
+# Terminal 1 — API
+pnpm dev:api
+
+# Terminal 2 — Web (start API first)
+pnpm dev:web
+```
+
+**One terminal (both at once):** `pnpm dev` or `npm run dev`
+
 - Web: http://localhost:3000/ar  
-- API: http://localhost:4000/api/v1/health  
+- API: http://localhost:4001/api/v1/health (set `API_PORT` in `.env`)  
+- Check both: `pnpm dev:status`
 
 Set `NEXT_PUBLIC_API_URL` in `.env` to connect the UI to MySQL via NestJS (required; mock mode removed).
 

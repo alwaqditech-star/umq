@@ -19,8 +19,11 @@ function setAdminHomeCookie(roleSlug: string | null) {
 
 interface AuthState {
   user: AuthUser | null;
+  /** True after admin/editor gate verified session once this tab. */
+  sessionVerified: boolean;
   setUser: (user: AuthUser | null) => void;
   clearSession: () => void;
+  markSessionVerified: () => void;
   hasPermission: (permission: string) => boolean;
 }
 
@@ -29,14 +32,16 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
+      sessionVerified: false,
       setUser: (user) => {
         setAdminHomeCookie(user?.roleSlug ?? null);
-        set({ user });
+        set({ user, sessionVerified: user ? true : false });
       },
       clearSession: () => {
         setAdminHomeCookie(null);
-        set({ user: null });
+        set({ user: null, sessionVerified: false });
       },
+      markSessionVerified: () => set({ sessionVerified: true }),
       hasPermission: (permission) => {
         const user = get().user;
         if (!user) return false;

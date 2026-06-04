@@ -37,7 +37,12 @@ export class BlogService {
     tags: unknown;
     category: { nameAr: string; nameEn: string; slug: string } | null;
     author: { firstName: string; lastName: string } | null;
-    coverMedia: { url: string; altAr: string | null; altEn: string | null } | null;
+    coverMedia: {
+      id: string;
+      url: string;
+      altAr: string | null;
+      altEn: string | null;
+    } | null;
   }) {
     const authorName = post.author
       ? `${post.author.firstName} ${post.author.lastName}`.trim()
@@ -62,6 +67,7 @@ export class BlogService {
       categoryEn,
       categorySlug: post.category?.slug ?? "",
       author: authorName,
+      coverMediaId: post.coverMedia?.id ?? null,
       coverImageUrl: post.coverMedia?.url ?? "",
       coverAltAr: post.coverMedia?.altAr ?? "",
       coverAltEn: post.coverMedia?.altEn ?? "",

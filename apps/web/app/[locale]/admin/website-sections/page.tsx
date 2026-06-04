@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useLocale } from "@/lib/i18n/use-locale";
+import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 
 type SectionRow = {
   id: string;
@@ -85,9 +86,7 @@ export default function WebsiteSectionsAdminPage() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-foreground-muted">
-          {locale === "ar" ? "جاري التحميل..." : "Loading..."}
-        </p>
+        <AdminPageSkeleton />
       ) : (
         <div className="space-y-3">
           {rows.map((row, index) => (

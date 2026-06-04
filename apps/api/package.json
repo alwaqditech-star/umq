@@ -5,7 +5,8 @@
   "scripts": {
     "build": "nest build",
     "prebuild": "pnpm --filter @umq/shared build",
-    "dev": "nest build && node dist/main.js",
+    "predev": "node ../../scripts/free-dev-ports.mjs api",
+    "dev": "nest start --watch",
     "start": "node dist/main.js",
     "start:prod": "node dist/main.js",
     "lint": "eslint \"{src,test}/**/*.ts\" --max-warnings 0",

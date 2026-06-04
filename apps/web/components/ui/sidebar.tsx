@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { FastNavLink } from "@/components/navigation/fast-nav-link";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -61,22 +62,24 @@ export function Sidebar({
           const active =
             pathname === path ||
             (href !== homeHref && pathname.startsWith(path));
+          const isDashboard = href === homeHref;
           return (
-            <Link
+            <FastNavLink
               key={key}
               href={path}
-              onClick={() => setAdminSidebarOpen(false)}
+              matchPrefix={!isDashboard}
+              prefetch
+              onNavigate={() => setAdminSidebarOpen(false)}
               className={cn(
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 active
-                  ? "bg-accent/15 text-primary shadow-sm"
+                  ? "bg-accent/15 font-semibold text-nav-active shadow-sm"
                   : "text-foreground-muted hover:bg-accent/5 hover:text-foreground",
               )}
-              aria-current={active ? "page" : undefined}
             >
               <Icon className="h-5 w-5 shrink-0" />
               {labels[key] ?? key}
-            </Link>
+            </FastNavLink>
           );
         })}
       </nav>

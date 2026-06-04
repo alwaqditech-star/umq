@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useAdminList } from "@/hooks/use-admin-list";
+import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { api } from "@/lib/api";
 import type { Testimonial } from "@/lib/api/types";
 import { AdminFormModal } from "@/components/admin/form-modal";
@@ -9,17 +11,15 @@ import { useLocale } from "@/lib/i18n/use-locale";
 
 export default function AdminTestimonialsPage() {
   const locale = useLocale();
-  const [rows, setRows] = useState<Testimonial[]>([]);
   const [editing, setEditing] = useState<Testimonial | null>(null);
   const [open, setOpen] = useState(false);
 
-  const load = useCallback(async () => {
-    setRows(await api.cms.testimonials.listAdmin!());
-  }, []);
+  const load = useCallback(() => api.cms.testimonials.listAdmin!(), []);
+  const { items: rows, loading, reload } = useAdminList(load);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  if (loading) {
+    return <AdminPageSkeleton />;
+  }
 
   return (
     <div className="space-y-6">
@@ -65,7 +65,7 @@ export default function AdminTestimonialsPage() {
                 variant="danger"
                 onClick={async () => {
                   await api.cms.testimonials.delete(row.id);
-                  await load();
+                  await reload();
                 }}
               >
                 {locale === "ar" ? "حذف" : "Delete"}
@@ -120,7 +120,7 @@ export default function AdminTestimonialsPage() {
           if (editing)
             await api.cms.testimonials.update(editing.id, payload);
           else await api.cms.testimonials.create(payload);
-          await load();
+          await reload();
         }}
       />
     </div>

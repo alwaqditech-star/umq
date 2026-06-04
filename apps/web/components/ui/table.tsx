@@ -22,7 +22,7 @@ export function TableHeader({
   children: React.ReactNode;
 }) {
   return (
-    <thead className="border-b border-border bg-light/80 text-start">
+    <thead className="border-b border-border bg-table-header text-start">
       {children}
     </thead>
   );
@@ -61,7 +61,7 @@ export function TableHead({
   return (
     <th
       className={cn(
-        "px-4 py-3 text-start text-xs font-semibold uppercase tracking-wide text-foreground-muted",
+        "px-4 py-3 text-start text-xs font-semibold uppercase tracking-wide text-table-header",
         className,
       )}
     >

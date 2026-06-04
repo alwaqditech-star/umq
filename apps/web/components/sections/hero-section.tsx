@@ -33,8 +33,8 @@ export function HeroSection({
 
       <div className="container-umq relative">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto max-w-3xl text-center"
         >
@@ -60,8 +60,8 @@ export function HeroSection({
           </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 0.35, duration: 0.45 }}
             className="mx-auto mt-16 grid max-w-2xl grid-cols-3 gap-6 rounded-2xl border border-border/80 bg-surface/80 p-6 shadow-md backdrop-blur-sm sm:gap-8"
           >

@@ -28,18 +28,18 @@ export default function AdminAuditPage() {
       </h1>
       <div className="overflow-x-auto rounded-2xl border border-border">
         <table className="w-full text-sm">
-          <thead className="bg-surface">
+          <thead className="border-b border-border bg-table-header">
             <tr>
-              <th className="px-4 py-3 text-start">
+              <th className="px-4 py-3 text-start text-xs font-semibold uppercase tracking-wide text-table-header">
                 {locale === "ar" ? "الوقت" : "Time"}
               </th>
-              <th className="px-4 py-3 text-start">
+              <th className="px-4 py-3 text-start text-xs font-semibold uppercase tracking-wide text-table-header">
                 {locale === "ar" ? "المستخدم" : "User"}
               </th>
-              <th className="px-4 py-3 text-start">
+              <th className="px-4 py-3 text-start text-xs font-semibold uppercase tracking-wide text-table-header">
                 {locale === "ar" ? "الإجراء" : "Action"}
               </th>
-              <th className="px-4 py-3 text-start">
+              <th className="px-4 py-3 text-start text-xs font-semibold uppercase tracking-wide text-table-header">
                 {locale === "ar" ? "الكيان" : "Entity"}
               </th>
             </tr>

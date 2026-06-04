@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useAdminList } from "@/hooks/use-admin-list";
+import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { api } from "@/lib/api";
 import type { Project } from "@/lib/api/types";
@@ -59,17 +61,14 @@ function toPayload(values: Record<string, string>) {
 export default function AdminProjectsPage() {
   const locale = useLocale();
   const canManage = useAuthStore((s) => s.hasPermission("projects:manage"));
-  const [items, setItems] = useState<Project[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Project | null>(null);
 
-  const load = useCallback(async () => {
-    setItems(await (api.projects.listAdmin?.() ?? api.projects.getAll()));
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const load = useCallback(
+    () => api.projects.listAdmin?.() ?? api.projects.getAll(),
+    [],
+  );
+  const { items, loading, reload } = useAdminList(load);
 
   const initial = editing
     ? {
@@ -81,6 +80,10 @@ export default function AdminProjectsPage() {
         featured: editing.featured ? "true" : "false",
       }
     : { status: "published", featured: "false", order: "0", categorySlug: "enterprise" };
+
+  if (loading) {
+    return <AdminPageSkeleton />;
+  }
 
   return (
     <div className="space-y-6">
@@ -116,7 +119,7 @@ export default function AdminProjectsPage() {
                     <button type="button" className="rounded-lg p-2 hover:bg-accent/10" onClick={() => { setEditing(row); setOpen(true); }}>
                       <Pencil className="h-4 w-4" />
                     </button>
-                    <button type="button" className="rounded-lg p-2 text-red-600 hover:bg-red-500/10" onClick={async () => { await api.projects.delete(row.id); await load(); }}>
+                    <button type="button" className="rounded-lg p-2 text-red-600 hover:bg-red-500/10" onClick={async () => { await api.projects.delete(row.id); await reload(); }}>
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -138,7 +141,7 @@ export default function AdminProjectsPage() {
           const payload = toPayload(values);
           if (editing) await api.projects.update(editing.id, payload);
           else await api.projects.create(payload);
-          await load();
+          await reload();
         }}
       />
     </div>

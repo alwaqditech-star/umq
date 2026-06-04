@@ -33,8 +33,8 @@ export function StatisticsSection({ locale }: { locale: Locale }) {
           {items.map((stat, i) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
+              initial={{ opacity: 0 }}
+              animate={inView ? { opacity: 1 } : {}}
               transition={{ delay: i * 0.08, duration: 0.4 }}
               className="surface-premium rounded-2xl p-8 text-center"
             >

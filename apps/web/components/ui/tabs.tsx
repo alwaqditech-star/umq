@@ -17,7 +17,7 @@ export function Tabs({
     <div
       role="tablist"
       className={cn(
-        "inline-flex gap-1 rounded-xl border border-border bg-light/60 p-1",
+        "inline-flex gap-1 rounded-xl border border-border bg-subtle p-1",
         className,
       )}
     >
@@ -33,7 +33,7 @@ export function Tabs({
             className={cn(
               "rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200",
               isActive
-                ? "bg-surface text-primary shadow-sm"
+                ? "bg-surface font-semibold text-nav-active shadow-sm"
                 : "text-foreground-muted hover:text-foreground hover:bg-accent/5",
             )}
           >

@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import type { BlogPost } from "@/lib/api/types";
 import { localized } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { Locale } from "@/stores/ui-store";
 
 export function BlogDetailClient({
@@ -22,6 +23,7 @@ export function BlogDetailClient({
   related: BlogPost[];
 }) {
   const title = localized(locale, post, "titleAr", "titleEn");
+  const coverSrc = resolveMediaUrl(post.coverImageUrl);
   const shareUrl =
     typeof window !== "undefined" ? window.location.href : "";
 
@@ -35,10 +37,10 @@ export function BlogDetailClient({
 
   return (
     <article>
-      {post.coverImageUrl && (
+      {coverSrc && (
         <div className="relative h-64 w-full overflow-hidden sm:h-80 lg:h-[420px]">
           <Image
-            src={post.coverImageUrl}
+            src={coverSrc}
             alt={title}
             fill
             className="object-cover"

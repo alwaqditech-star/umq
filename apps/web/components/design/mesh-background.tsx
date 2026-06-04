@@ -16,13 +16,13 @@ export function MeshBackground({
     >
       <div
         className={cn(
-          "absolute -top-1/4 start-0 h-[520px] w-[520px] rounded-full blur-[100px]",
+          "mesh-glow-a absolute -top-1/4 start-0 h-[520px] w-[520px] rounded-full blur-[100px]",
           variant === "hero" ? "bg-accent/25" : "bg-accent/15",
         )}
       />
       <div
         className={cn(
-          "absolute top-1/3 end-0 h-[420px] w-[420px] rounded-full blur-[90px]",
+          "mesh-glow-b absolute top-1/3 end-0 h-[420px] w-[420px] rounded-full blur-[90px]",
           variant === "subtle" ? "bg-primary/8" : "bg-primary/12",
         )}
       />

@@ -15,6 +15,8 @@ export default function LoginPage() {
   const locale = useLocale();
   const dict = getDictionary(locale);
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -52,8 +54,8 @@ export default function LoginPage() {
       if (err instanceof ApiError && err.status === 404) {
         setError(
           locale === "ar"
-            ? "مسار API غير صحيح. تأكد أن NestJS يعمل على المنفذ 4000"
-            : "API route not found. Ensure NestJS is running on port 4000",
+            ? "مسار API غير صحيح. شغّل `npm run dev` من جذر المشروع"
+            : "API route not found. Run `npm run dev` from the repo root",
         );
         return;
       }
@@ -73,19 +75,31 @@ export default function LoginPage() {
       <p className="mt-2 text-center text-sm text-foreground-muted">
         {dict.auth.loginSubtitle}
       </p>
-      <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="mt-8 space-y-4"
+        autoComplete="off"
+      >
         <Input
           name="email"
           type="email"
           label={dict.auth.email}
-          defaultValue="admin@umq.sa"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="off"
+          readOnly
+          onFocus={(e) => e.currentTarget.removeAttribute("readonly")}
           required
         />
         <Input
           name="password"
           type="password"
           label={dict.auth.password}
-          defaultValue="ChangeMe123!"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="new-password"
+          readOnly
+          onFocus={(e) => e.currentTarget.removeAttribute("readonly")}
           required
         />
         <label className="flex items-center gap-2 text-sm text-foreground-muted">

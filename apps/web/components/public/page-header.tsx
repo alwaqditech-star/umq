@@ -29,8 +29,8 @@ export function PageHeader({
 
       <div className="container-umq relative py-14 sm:py-20">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
             "max-w-3xl",

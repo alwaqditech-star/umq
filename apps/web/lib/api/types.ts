@@ -54,6 +54,7 @@ export interface BlogPost extends BaseEntity {
   categoryEn?: string;
   categorySlug?: string;
   author: string;
+  coverMediaId?: string | null;
   coverImageUrl?: string;
   coverAltAr?: string;
   coverAltEn?: string;

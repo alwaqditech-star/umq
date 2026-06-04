@@ -10,7 +10,9 @@ import { Button } from "@/components/ui/button";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
 import { useUiStore, type Locale } from "@/stores/ui-store";
-import { PageTransition } from "@/components/motion/page-transition";
+import { cn } from "@/lib/utils";
+import { Suspense } from "react";
+import { NavigationProgress } from "@/components/navigation/navigation-progress";
 import { adminNavItems, filterNavByPermissions } from "@/lib/admin/nav-config";
 
 export function AdminLayout({
@@ -22,7 +24,7 @@ export function AdminLayout({
 }) {
   const dict = getDictionary(locale);
   const pathname = usePathname();
-  const { toggleAdminSidebar, toggleTheme, theme } = useUiStore();
+  const { toggleAdminSidebar, toggleTheme, theme, navPending } = useUiStore();
   const clearSession = useAuthStore((s) => s.clearSession);
   const hasPermission = useAuthStore((s) => s.hasPermission);
   const user = useAuthStore((s) => s.user);
@@ -64,10 +66,15 @@ export function AdminLayout({
     testimonials: locale === "ar" ? "آراء العملاء" : "Testimonials",
     audit: locale === "ar" ? "التدقيق" : "Audit",
     media: locale === "ar" ? "الوسائط" : "Media",
+    websiteSections:
+      locale === "ar" ? "أقسام الموقع" : "Website sections",
   };
 
   return (
     <div className="flex min-h-screen bg-background">
+      <Suspense fallback={null}>
+        <NavigationProgress />
+      </Suspense>
       <Sidebar
         locale={locale}
         homeHref="/admin"
@@ -118,8 +125,13 @@ export function AdminLayout({
             </Link>
           </div>
         </header>
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
-          <PageTransition>{children}</PageTransition>
+        <main
+          className={cn(
+            "flex-1 p-4 transition-opacity duration-150 sm:p-6 lg:p-8",
+            navPending && "pointer-events-none opacity-60",
+          )}
+        >
+          {children}
         </main>
       </div>
     </div>

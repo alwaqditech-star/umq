@@ -350,11 +350,36 @@ async function main() {
 
   const adminUser = await prisma.user.findUnique({ where: { email: "admin@umq.sa" } });
 
+  const blogCoverMediaId = "11111111-1111-4111-8111-111111111101";
+  const blogCoverUrl =
+    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&q=80";
+
+  await prisma.mediaLibrary.upsert({
+    where: { id: blogCoverMediaId },
+    update: {
+      url: blogCoverUrl,
+      altAr: "التحول الرقمي في السعودية",
+      altEn: "Digital transformation in Saudi Arabia",
+    },
+    create: {
+      id: blogCoverMediaId,
+      filename: "digital-transformation-cover.jpg",
+      mimeType: "image/jpeg",
+      size: 0,
+      storageKey: "seed/blog/digital-transformation-cover.jpg",
+      url: blogCoverUrl,
+      folder: "blog",
+      altAr: "التحول الرقمي في السعودية",
+      altEn: "Digital transformation in Saudi Arabia",
+      uploadedById: adminUser?.id,
+    },
+  });
+
   await prisma.blogPost.upsert({
     where: {
       slug_locale: { slug: "digital-transformation-ksa", locale: Locale.AR },
     },
-    update: {},
+    update: { coverMediaId: blogCoverMediaId },
     create: {
       slug: "digital-transformation-ksa",
       locale: Locale.AR,
@@ -363,6 +388,7 @@ async function main() {
       content: "<p>محتوى المقال التعريفي عن التحول الرقمي.</p>",
       categoryId: blogCategory.id,
       authorId: adminUser?.id,
+      coverMediaId: blogCoverMediaId,
       readingTime: 6,
       publishedAt: new Date(),
       status: ContentStatus.PUBLISHED,

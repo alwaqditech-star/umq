@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useAdminList } from "@/hooks/use-admin-list";
+import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { api } from "@/lib/api";
 import type { Service } from "@/lib/api/types";
@@ -52,18 +54,14 @@ function toPayload(values: Record<string, string>) {
 export default function AdminServicesPage() {
   const locale = useLocale();
   const canManage = useAuthStore((s) => s.hasPermission("services:manage"));
-  const [items, setItems] = useState<Service[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Service | null>(null);
 
-  const load = useCallback(async () => {
-    const data = await (api.services.listAdmin?.() ?? api.services.getAll());
-    setItems(data);
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const load = useCallback(
+    () => api.services.listAdmin?.() ?? api.services.getAll(),
+    [],
+  );
+  const { items, loading, reload } = useAdminList(load);
 
   const initial = editing
     ? {
@@ -80,6 +78,10 @@ export default function AdminServicesPage() {
         featured: editing.featured ? "true" : "false",
       }
     : { status: "published", featured: "false", order: "0", icon: "layers" };
+
+  if (loading) {
+    return <AdminPageSkeleton />;
+  }
 
   return (
     <div className="space-y-6">
@@ -136,7 +138,7 @@ export default function AdminServicesPage() {
                       className="rounded-lg p-2 text-red-600 hover:bg-red-500/10"
                       onClick={async () => {
                         await api.services.delete(row.id);
-                        await load();
+                        await reload();
                       }}
                     >
                       <Trash2 className="h-4 w-4" />
@@ -169,7 +171,7 @@ export default function AdminServicesPage() {
           const payload = toPayload(values);
           if (editing) await api.services.update(editing.id, payload);
           else await api.services.create(payload);
-          await load();
+          await reload();
         }}
       />
     </div>

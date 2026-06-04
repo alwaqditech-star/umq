@@ -4,15 +4,18 @@ import { useEffect, useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { MediaCoverInput } from "@/components/admin/media-cover-input";
 
 export type FormField = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "email" | "password" | "number" | "select" | "checkbox";
+  type?: "text" | "textarea" | "email" | "password" | "number" | "select" | "checkbox" | "image";
   required?: boolean;
   placeholder?: string;
   options?: { value: string; label: string }[];
   rows?: number;
+  /** Used when type is "image" — media library folder */
+  uploadFolder?: string;
 };
 
 export function AdminFormModal({
@@ -24,17 +27,21 @@ export function AdminFormModal({
   onSubmit,
   submitLabel,
   locale,
+  imagePreviews: imagePreviewsProp = {},
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   fields: FormField[];
   initialValues?: Record<string, string | boolean>;
+  /** Preview URLs for image fields, keyed by field name */
+  imagePreviews?: Record<string, string>;
   onSubmit: (values: Record<string, string>) => Promise<void>;
   submitLabel: string;
   locale: "ar" | "en";
 }) {
   const [values, setValues] = useState<Record<string, string>>({});
+  const [imagePreviews, setImagePreviews] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -46,7 +53,8 @@ export function AdminFormModal({
         typeof raw === "boolean" ? (raw ? "true" : "false") : String(raw ?? "");
     }
     setValues(next);
-  }, [open, fields, initialValues]);
+    setImagePreviews(imagePreviewsProp);
+  }, [open, fields, initialValues, imagePreviewsProp]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -62,6 +70,21 @@ export function AdminFormModal({
     <Modal open={open} onClose={onClose} title={title}>
       <div className="max-h-[70vh] space-y-4 overflow-y-auto pe-1">
         {fields.map((field) => {
+          if (field.type === "image") {
+            return (
+              <MediaCoverInput
+                key={field.name}
+                mediaId={values[field.name] ?? ""}
+                previewUrl={imagePreviews[field.name]}
+                folder={field.uploadFolder ?? "general"}
+                locale={locale}
+                onChange={(id, url) => {
+                  setValues((v) => ({ ...v, [field.name]: id }));
+                  setImagePreviews((p) => ({ ...p, [field.name]: url }));
+                }}
+              />
+            );
+          }
           if (field.type === "textarea") {
             return (
               <div key={field.name}>

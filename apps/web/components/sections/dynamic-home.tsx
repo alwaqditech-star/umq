@@ -13,7 +13,19 @@ import { useSiteConfig } from "@/providers/site-config-provider";
 import type { BlogPost, Project, Service, Testimonial } from "@/lib/api/types";
 import type { Locale } from "@/stores/ui-store";
 
-export function DynamicHome({
+export function DynamicHomeHero({
+  locale,
+  heroContent,
+}: {
+  locale: Locale;
+  heroContent?: Record<string, string> | null;
+}) {
+  const { enabledKeys } = useSiteConfig();
+  if (!enabledKeys.has("hero")) return null;
+  return <HeroSection locale={locale} content={heroContent} />;
+}
+
+export function DynamicHomeBody({
   locale,
   services,
   projects,
@@ -21,7 +33,6 @@ export function DynamicHome({
   posts,
   partners,
   team,
-  heroContent,
 }: {
   locale: Locale;
   services: Service[];
@@ -38,15 +49,12 @@ export function DynamicHome({
     bioAr: string;
     bioEn: string;
   }[];
-  heroContent?: Record<string, string> | null;
 }) {
   const { enabledKeys } = useSiteConfig();
-
   const show = (key: string) => enabledKeys.has(key);
 
   return (
     <>
-      {show("hero") && <HeroSection locale={locale} content={heroContent} />}
       {show("services") && (
         <ServicesPreview locale={locale} services={services} />
       )}

@@ -9,6 +9,7 @@ interface UiState {
   theme: ThemeMode;
   publicMenuOpen: boolean;
   adminSidebarOpen: boolean;
+  navPending: boolean;
   setLocale: (locale: Locale) => void;
   setTheme: (theme: ThemeMode) => void;
   toggleTheme: () => void;
@@ -16,6 +17,8 @@ interface UiState {
   setPublicMenuOpen: (open: boolean) => void;
   toggleAdminSidebar: () => void;
   setAdminSidebarOpen: (open: boolean) => void;
+  startNavigation: () => void;
+  endNavigation: () => void;
 }
 
 export const useUiStore = create<UiState>()(
@@ -25,6 +28,7 @@ export const useUiStore = create<UiState>()(
       theme: "light",
       publicMenuOpen: false,
       adminSidebarOpen: false,
+      navPending: false,
       setLocale: (locale) => set({ locale }),
       setTheme: (theme) => set({ theme }),
       toggleTheme: () =>
@@ -35,6 +39,8 @@ export const useUiStore = create<UiState>()(
       toggleAdminSidebar: () =>
         set((s) => ({ adminSidebarOpen: !s.adminSidebarOpen })),
       setAdminSidebarOpen: (adminSidebarOpen) => set({ adminSidebarOpen }),
+      startNavigation: () => set({ navPending: true }),
+      endNavigation: () => set({ navPending: false }),
     }),
     {
       name: "umq-ui",

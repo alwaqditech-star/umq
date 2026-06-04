@@ -78,7 +78,7 @@ export function Dropdown({
                   type="button"
                   className={cn(
                     "w-full px-4 py-2.5 text-start text-sm transition-colors hover:bg-accent/10",
-                    value === option.value && "bg-accent/10 font-medium text-primary",
+                    value === option.value && "bg-accent/10 font-medium text-nav-active",
                   )}
                   onClick={() => {
                     onChange(option.value);

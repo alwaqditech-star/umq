@@ -1,14 +1,14 @@
 import { api } from "@/lib/api";
 import { fetchPublicOrEmpty } from "@/lib/api/server-fetch";
 import { BlogDetailClient } from "@/components/blog/blog-detail-client";
-import { fetchHomeSections, fetchSeo } from "@/lib/site-config";
+import { fetchSeo, isBlogSectionEnabled } from "@/lib/site-config";
 import { isValidLocale } from "@/lib/i18n/routes";
 import { localized } from "@/lib/i18n/dictionaries";
 import { notFound } from "next/navigation";
 import type { Locale } from "@/stores/ui-store";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
@@ -59,8 +59,7 @@ export default async function BlogDetailPage({
   if (!isValidLocale(localeParam)) notFound();
   const locale = localeParam as Locale;
 
-  const sections = await fetchHomeSections();
-  if (!sections.some((s) => s.key === "blog")) {
+  if (!(await isBlogSectionEnabled())) {
     notFound();
   }
 

@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { useLocale } from "@/lib/i18n/use-locale";
 import { useAuthStore } from "@/stores/auth-store";
+import { AdminPageSkeleton } from "@/components/admin/admin-page-skeleton";
 
 export default function AdminUsersPage() {
   const locale = useLocale();
@@ -28,14 +29,20 @@ export default function AdminUsersPage() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    const [u, r] = await Promise.all([
-      api.users.listAdmin?.() ?? api.users.getAll(),
-      api.users.getRoles(),
-    ]);
-    setUsers(u);
-    setRoles(r);
+    setLoading(true);
+    try {
+      const [u, r] = await Promise.all([
+        api.users.listAdmin?.() ?? api.users.getAll(),
+        api.users.getRoles(),
+      ]);
+      setUsers(u);
+      setRoles(r);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -43,6 +50,10 @@ export default function AdminUsersPage() {
   }, [load]);
 
   const roleOptions = roles.map((r) => ({ value: r.id, label: r.name }));
+
+  if (loading) {
+    return <AdminPageSkeleton />;
+  }
 
   const fields = [
     { name: "firstName", label: locale === "ar" ? "الاسم الأول" : "First name", required: true },

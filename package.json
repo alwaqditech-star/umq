@@ -3,7 +3,11 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "pnpm --filter @umq/shared build && turbo run dev --filter=@umq/web --filter=@umq/api --parallel",
+    "dev": "node scripts/dev.mjs",
+    "dev:api": "pnpm --filter @umq/api dev",
+    "dev:web": "pnpm --filter @umq/web dev",
+    "dev:status": "node scripts/dev-status.mjs",
+    "dev:free-ports": "node scripts/free-dev-ports.mjs",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",

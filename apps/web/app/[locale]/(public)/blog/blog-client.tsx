@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import type { BlogPost } from "@/lib/api/types";
 import { getDictionary, localized } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
+import { resolveMediaUrl } from "@/lib/media-url";
 import type { Locale } from "@/stores/ui-store";
 
 export function BlogPageClient({
@@ -31,14 +32,16 @@ export function BlogPageClient({
           </p>
         ) : (
           <StaggerList className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
+            {posts.map((post) => {
+              const coverSrc = resolveMediaUrl(post.coverImageUrl);
+              return (
               <StaggerItem key={post.id}>
                 <Card hover elevated className="group h-full overflow-hidden p-0">
                   <Link href={localePath(locale, `/blog/${post.slug}`)}>
                     <div className="relative aspect-[16/10] bg-accent/10">
-                      {post.coverImageUrl ? (
+                      {coverSrc ? (
                         <Image
-                          src={post.coverImageUrl}
+                          src={coverSrc}
                           alt={localized(locale, post, "titleAr", "titleEn")}
                           fill
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -74,7 +77,8 @@ export function BlogPageClient({
                   </Link>
                 </Card>
               </StaggerItem>
-            ))}
+            );
+            })}
           </StaggerList>
         )}
       </div>

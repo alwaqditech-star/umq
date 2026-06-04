@@ -22,8 +22,8 @@ export function AuthLayout({
       <div className="pointer-events-none absolute -bottom-32 start-0 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
 
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.4 }}
         className="relative z-10 w-full max-w-md"
       >

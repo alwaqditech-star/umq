@@ -1,4 +1,5 @@
 import { useAuthStore } from "@/stores/auth-store";
+import { PUBLIC_PAGE_REVALIDATE } from "@/lib/public-cache";
 
 export class ApiError extends Error {
   constructor(
@@ -23,7 +24,8 @@ function normalizePublicApiPath(): string {
 export function getBaseUrl(): string {
   if (typeof window === "undefined") {
     const internal = (
-      process.env.API_INTERNAL_URL ?? "http://127.0.0.1:4000"
+      process.env.API_INTERNAL_URL ??
+      `http://127.0.0.1:${process.env.API_PORT ?? "4001"}`
     ).replace(/\/$/, "");
     return `${internal}/api/v1`;
   }
@@ -78,10 +80,16 @@ export async function apiFetch<T>(
     ...(headers as Record<string, string>),
   });
 
+  const serverCache =
+    typeof window === "undefined" && !auth
+      ? { next: { revalidate: PUBLIC_PAGE_REVALIDATE } }
+      : {};
+
   let response = await fetch(url, {
     ...init,
     credentials: "include",
     headers: buildHeaders(),
+    ...serverCache,
   });
 
   if (auth && response.status === 401) {
@@ -91,6 +99,7 @@ export async function apiFetch<T>(
         ...init,
         credentials: "include",
         headers: buildHeaders(),
+        ...serverCache,
       });
     }
   }

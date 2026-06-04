@@ -1,38 +1,29 @@
+import "server-only";
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { getBaseUrl } from "@/lib/api/http/client";
 import { fetchPublicOrEmpty } from "@/lib/api/server-fetch";
+import { PUBLIC_PAGE_REVALIDATE } from "@/lib/public-cache";
 import type { HomeSectionKey } from "@umq/shared";
+import {
+  DEFAULT_CONTACT,
+  DEFAULT_HOME_SECTIONS,
+  type ContactInfoSettings,
+  type HomeSectionConfig,
+} from "@/lib/site-config.defaults";
 
-export interface HomeSectionConfig {
-  key: string;
-  labelAr: string;
-  labelEn: string;
-  sortOrder: number;
-}
-
-export interface ContactInfoSettings {
-  email: string;
-  phone: string;
-  whatsapp: string;
-  addressAr: string;
-  addressEn: string;
-  hoursAr: string;
-  hoursEn: string;
-  mapEmbedUrl?: string;
-}
-
-const DEFAULT_SECTIONS: HomeSectionConfig[] = [
-  { key: "hero", labelAr: "الواجهة", labelEn: "Hero", sortOrder: 0 },
-  { key: "services", labelAr: "الخدمات", labelEn: "Services", sortOrder: 10 },
-  { key: "projects", labelAr: "المشاريع", labelEn: "Projects", sortOrder: 20 },
-  { key: "blog", labelAr: "المدونة", labelEn: "Blog", sortOrder: 30 },
-  { key: "testimonials", labelAr: "آراء العملاء", labelEn: "Testimonials", sortOrder: 40 },
-];
+export type { ContactInfoSettings, HomeSectionConfig } from "@/lib/site-config.defaults";
+export {
+  DEFAULT_CONTACT,
+  DEFAULT_HOME_SECTIONS,
+  parseContactFromPublicSettings,
+} from "@/lib/site-config.defaults";
 
 async function serverGet<T>(path: string, fallback: T): Promise<T> {
   return fetchPublicOrEmpty(async () => {
     try {
       const res = await fetch(`${getBaseUrl()}${path}`, {
-        next: { revalidate: 60 },
+        next: { revalidate: PUBLIC_PAGE_REVALIDATE },
       });
       if (!res.ok) return fallback;
       return (await res.json()) as T;
@@ -42,28 +33,52 @@ async function serverGet<T>(path: string, fallback: T): Promise<T> {
   }, fallback);
 }
 
-export async function fetchHomeSections(): Promise<HomeSectionConfig[]> {
-  return serverGet<HomeSectionConfig[]>("/home-sections", DEFAULT_SECTIONS);
+async function loadHomeSections(): Promise<HomeSectionConfig[]> {
+  const rows = await serverGet<HomeSectionConfig[]>(
+    "/home-sections",
+    DEFAULT_HOME_SECTIONS,
+  );
+  return rows.length > 0 ? rows : DEFAULT_HOME_SECTIONS;
 }
 
-export async function fetchPublicSettings(): Promise<{
+async function loadPublicSettings(): Promise<{
   contact: ContactInfoSettings;
 }> {
   const data = await serverGet<Record<string, unknown>>("/settings/public", {});
   const contact = (data["contact.info"] ?? {}) as Partial<ContactInfoSettings>;
   return {
     contact: {
-      email: contact.email ?? "info@umq.sa",
-      phone: contact.phone ?? "+966 11 000 0000",
-      whatsapp: contact.whatsapp ?? "+966500000000",
-      addressAr: contact.addressAr ?? "الرياض، المملكة العربية السعودية",
-      addressEn: contact.addressEn ?? "Riyadh, Saudi Arabia",
-      hoursAr: contact.hoursAr ?? "الأحد – الخميس، 9 ص – 6 م",
-      hoursEn: contact.hoursEn ?? "Sun – Thu, 9 AM – 6 PM",
+      email: contact.email ?? DEFAULT_CONTACT.email,
+      phone: contact.phone ?? DEFAULT_CONTACT.phone,
+      whatsapp: contact.whatsapp ?? DEFAULT_CONTACT.whatsapp,
+      addressAr: contact.addressAr ?? DEFAULT_CONTACT.addressAr,
+      addressEn: contact.addressEn ?? DEFAULT_CONTACT.addressEn,
+      hoursAr: contact.hoursAr ?? DEFAULT_CONTACT.hoursAr,
+      hoursEn: contact.hoursEn ?? DEFAULT_CONTACT.hoursEn,
       mapEmbedUrl: contact.mapEmbedUrl,
     },
   };
 }
+
+const cachedHomeSections = unstable_cache(
+  loadHomeSections,
+  ["umq-home-sections"],
+  { revalidate: PUBLIC_PAGE_REVALIDATE, tags: ["home-sections"] },
+);
+
+const cachedPublicSettings = unstable_cache(
+  loadPublicSettings,
+  ["umq-public-settings"],
+  { revalidate: PUBLIC_PAGE_REVALIDATE, tags: ["public-settings"] },
+);
+
+export const fetchHomeSections = cache(cachedHomeSections);
+export const fetchPublicSettings = cache(cachedPublicSettings);
+
+export const isBlogSectionEnabled = cache(async (): Promise<boolean> => {
+  const sections = await fetchHomeSections();
+  return sections.some((s) => s.key === "blog");
+});
 
 export function buildEnabledSet(sections: HomeSectionConfig[]): Set<string> {
   return new Set(sections.map((s) => s.key));
@@ -76,25 +91,40 @@ export function isSectionEnabled(
   return enabled.has(key);
 }
 
-export async function fetchHeroSection(locale: string) {
-  return serverGet<{ content?: Record<string, string> } | null>(
-    `/website-sections/home.hero?locale=${locale}`,
-    null,
-  );
-}
+export const fetchHeroSection = cache((locale: string) =>
+  unstable_cache(
+    () =>
+      serverGet<{ content?: Record<string, string> } | null>(
+        `/website-sections/home.hero?locale=${locale}`,
+        null,
+      ),
+    ["umq-hero", locale],
+    { revalidate: PUBLIC_PAGE_REVALIDATE, tags: [`hero-${locale}`] },
+  )(),
+);
 
-export async function fetchFaqSection(locale: string) {
-  return serverGet<{ content?: { items?: { q: string; a: string }[] } } | null>(
-    `/website-sections/contact.faq?locale=${locale}`,
-    null,
-  );
-}
+export const fetchFaqSection = cache((locale: string) =>
+  unstable_cache(
+    () =>
+      serverGet<{ content?: { items?: { q: string; a: string }[] } } | null>(
+        `/website-sections/contact.faq?locale=${locale}`,
+        null,
+      ),
+    ["umq-faq", locale],
+    { revalidate: PUBLIC_PAGE_REVALIDATE, tags: [`faq-${locale}`] },
+  )(),
+);
 
-export async function fetchSeo(path: string, locale: string) {
-  return serverGet<{
-    title: string;
-    description?: string;
-    canonical?: string;
-    robots?: string;
-  } | null>(`/seo?path=${encodeURIComponent(path)}&locale=${locale}`, null);
-}
+export const fetchSeo = cache((path: string, locale: string) =>
+  unstable_cache(
+    () =>
+      serverGet<{
+        title: string;
+        description?: string;
+        canonical?: string;
+        robots?: string;
+      } | null>(`/seo?path=${encodeURIComponent(path)}&locale=${locale}`, null),
+    ["umq-seo", path, locale],
+    { revalidate: PUBLIC_PAGE_REVALIDATE, tags: [`seo-${path}-${locale}`] },
+  )(),
+);

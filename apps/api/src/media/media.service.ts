@@ -40,14 +40,18 @@ export class MediaService {
   }
 
   private publicBaseUrl(): string {
-    const port = this.config.get<string>("API_PORT") ?? "4000";
+    const port = this.config.get<string>("API_PORT") ?? "4001";
     const explicit = this.config.get<string>("PUBLIC_API_URL");
     if (explicit) return explicit.replace(/\/$/, "");
     return `http://127.0.0.1:${port}/api/v1`;
   }
 
   private fileUrl(storageKey: string): string {
-    return `${this.publicBaseUrl()}/media/files/${storageKey}`;
+    const encoded = storageKey
+      .split("/")
+      .map((segment) => encodeURIComponent(segment))
+      .join("/");
+    return `/api/v1/media/files/${encoded}`;
   }
 
   list() {

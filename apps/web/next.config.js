@@ -30,14 +30,23 @@ loadRootEnv();
 
 const apiInternal =
   process.env.API_INTERNAL_URL?.replace(/\/$/, "") ??
-  "http://127.0.0.1:4000";
+  `http://127.0.0.1:${process.env.API_PORT ?? "4001"}`;
+
+const apiImagePort = (() => {
+  try {
+    const port = new URL(apiInternal).port;
+    return port || (apiInternal.startsWith("https") ? "443" : "80");
+  } catch {
+    return process.env.API_PORT ?? "4001";
+  }
+})();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
-      { protocol: "http", hostname: "127.0.0.1", port: "4000", pathname: "/**" },
-      { protocol: "http", hostname: "localhost", port: "4000", pathname: "/**" },
+      { protocol: "http", hostname: "127.0.0.1", port: apiImagePort, pathname: "/**" },
+      { protocol: "http", hostname: "localhost", port: apiImagePort, pathname: "/**" },
       { protocol: "https", hostname: "**", pathname: "/**" },
     ],
   },
@@ -45,6 +54,10 @@ const nextConfig = {
   serverExternalPackages: ["@umq/shared"],
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
+    staleTimes: {
+      dynamic: 30,
+      static: 180,
+    },
   },
   async rewrites() {
     return [

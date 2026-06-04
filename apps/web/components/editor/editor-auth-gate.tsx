@@ -21,9 +21,18 @@ export function EditorAuthGate({
 }) {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
-  const [ready, setReady] = useState(false);
+  const sessionVerified = useAuthStore((s) => s.sessionVerified);
+  const markSessionVerified = useAuthStore((s) => s.markSessionVerified);
+  const [ready, setReady] = useState(
+    () => Boolean(sessionVerified && user && isEditorUser(user)),
+  );
 
   useEffect(() => {
+    if (sessionVerified && user && isEditorUser(user)) {
+      setReady(true);
+      return;
+    }
+
     let cancelled = false;
 
     async function verify() {
@@ -42,6 +51,7 @@ export function EditorAuthGate({
           router.replace(localePath(locale, "/forbidden"));
           return;
         }
+        markSessionVerified();
         if (!cancelled) setReady(true);
       } catch {
         router.replace(localePath(locale, "/login"));
@@ -52,7 +62,7 @@ export function EditorAuthGate({
     return () => {
       cancelled = true;
     };
-  }, [user, locale, router]);
+  }, [user, locale, router, sessionVerified, markSessionVerified]);
 
   if (!ready) {
     return (
