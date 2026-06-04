@@ -10,7 +10,9 @@
     "check-types": "turbo run check-types",
     "db:generate": "turbo run db:generate --filter=@umq/database",
     "db:migrate": "turbo run db:migrate --filter=@umq/database",
-    "db:seed": "turbo run db:seed --filter=@umq/database"
+    "db:seed": "turbo run db:seed --filter=@umq/database",
+    "db:migrate:omq": "pnpm --filter @umq/database db:migrate:omq",
+    "migrate:legacy": "pnpm --filter @umq/database exec tsx ../../scripts/migrate-legacy-db.ts"
   },
   "devDependencies": {
     "prettier": "^3.7.4",

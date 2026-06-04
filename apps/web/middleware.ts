@@ -9,6 +9,29 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${defaultLocale}`, request.url));
   }
 
+  const segments = pathname.split("/").filter(Boolean);
+  const localeSegment = segments[0];
+  const isLocale = localeSegment && isValidLocale(localeSegment);
+  const restPath = isLocale ? `/${segments.slice(1).join("/")}` : pathname;
+
+  if (isLocale && restPath.startsWith("/admin")) {
+    const hasToken = request.cookies.get("umq_access")?.value;
+    if (!hasToken) {
+      return NextResponse.redirect(
+        new URL(`/${localeSegment}/login`, request.url),
+      );
+    }
+  }
+
+  if (isLocale && restPath === "/login") {
+    const hasToken = request.cookies.get("umq_access")?.value;
+    if (hasToken) {
+      return NextResponse.redirect(
+        new URL(`/${localeSegment}/admin`, request.url),
+      );
+    }
+  }
+
   const segment = pathname.split("/")[1];
   if (segment && !isValidLocale(segment) && !pathname.startsWith("/_next")) {
     const hasLocalePrefix = locales.some((l) => pathname.startsWith(`/${l}`));

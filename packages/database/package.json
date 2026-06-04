@@ -20,7 +20,8 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.0"
+    "@prisma/client": "^6.19.0",
+    "@umq/shared": "workspace:*"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

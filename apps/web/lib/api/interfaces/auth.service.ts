@@ -3,6 +3,8 @@ export interface AuthUser {
   email: string;
   name: string;
   role: string;
+  roleSlug: string;
+  permissions: string[];
 }
 
 export interface LoginCredentials {

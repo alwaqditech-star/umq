@@ -1,21 +1,46 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: umq-postgres
+
+  mysql:
+
+    image: mysql:8.4
+
+    container_name: umq-mysql
+
     restart: unless-stopped
+
     ports:
-      - "5432:5432"
+
+      - "3307:3306"
+
     environment:
-      POSTGRES_USER: umq
-      POSTGRES_PASSWORD: umq_dev_password
-      POSTGRES_DB: umq_platform
+
+      MYSQL_ROOT_PASSWORD: umq_root_password
+
+      MYSQL_DATABASE: umq_platform
+
+      MYSQL_USER: umq
+
+      MYSQL_PASSWORD: umq_dev_password
+
     volumes:
-      - umq_postgres_data:/var/lib/postgresql/data
+
+      - umq_mysql_data:/var/lib/mysql
+
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U umq -d umq_platform"]
+
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pumq_root_password"]
+
       interval: 5s
+
       timeout: 5s
+
       retries: 10
 
+
+
 volumes:
-  umq_postgres_data:
+
+  umq_mysql_data:
+

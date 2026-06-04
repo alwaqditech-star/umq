@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -41,13 +41,13 @@ enum Locale {
 // ─── Identity & Access ───────────────────────────────────────────────────────
 
 model User {
-  id                String    @id @default(uuid()) @db.Uuid
+  id                String    @id @default(uuid()) @db.Char(36)
   email             String
   passwordHash      String    @map("password_hash")
   firstName         String    @map("first_name")
   lastName          String    @map("last_name")
-  avatarMediaId     String?   @map("avatar_media_id") @db.Uuid
-  roleId            String    @map("role_id") @db.Uuid
+  avatarMediaId     String?   @map("avatar_media_id") @db.Char(36)
+  roleId            String    @map("role_id") @db.Char(36)
   isActive          Boolean   @default(true) @map("is_active")
   locale            Locale    @default(AR)
   lastLoginAt       DateTime? @map("last_login_at")
@@ -56,8 +56,8 @@ model User {
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime  @updatedAt @map("updated_at")
   deletedAt         DateTime? @map("deleted_at")
-  createdById       String?   @map("created_by_id") @db.Uuid
-  updatedById       String?   @map("updated_by_id") @db.Uuid
+  createdById       String?   @map("created_by_id") @db.Char(36)
+  updatedById       String?   @map("updated_by_id") @db.Char(36)
 
   role              Role              @relation(fields: [roleId], references: [id])
   avatarMedia       MediaLibrary?     @relation("UserAvatar", fields: [avatarMediaId], references: [id])
@@ -75,7 +75,7 @@ model User {
 }
 
 model Role {
-  id          String    @id @default(uuid()) @db.Uuid
+  id          String    @id @default(uuid()) @db.Char(36)
   name        String
   slug        String
   description String?
@@ -92,7 +92,7 @@ model Role {
 }
 
 model Permission {
-  id        String    @id @default(uuid()) @db.Uuid
+  id        String    @id @default(uuid()) @db.Char(36)
   name      String
   slug      String
   module    String
@@ -108,9 +108,9 @@ model Permission {
 }
 
 model RolePermission {
-  id           String   @id @default(uuid()) @db.Uuid
-  roleId       String   @map("role_id") @db.Uuid
-  permissionId String   @map("permission_id") @db.Uuid
+  id           String   @id @default(uuid()) @db.Char(36)
+  roleId       String   @map("role_id") @db.Char(36)
+  permissionId String   @map("permission_id") @db.Char(36)
   createdAt    DateTime @default(now()) @map("created_at")
 
   role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
@@ -121,8 +121,8 @@ model RolePermission {
 }
 
 model RefreshToken {
-  id        String    @id @default(uuid()) @db.Uuid
-  userId    String    @map("user_id") @db.Uuid
+  id        String    @id @default(uuid()) @db.Char(36)
+  userId    String    @map("user_id") @db.Char(36)
   tokenHash String    @map("token_hash")
   expiresAt DateTime  @map("expires_at")
   revokedAt DateTime? @map("revoked_at")
@@ -140,7 +140,7 @@ model RefreshToken {
 // ─── Services & Portfolio ────────────────────────────────────────────────────
 
 model Service {
-  id        String        @id @default(uuid()) @db.Uuid
+  id        String        @id @default(uuid()) @db.Char(36)
   slug      String
   titleAr   String        @map("title_ar")
   titleEn   String        @map("title_en")
@@ -155,8 +155,8 @@ model Service {
   createdAt DateTime      @default(now()) @map("created_at")
   updatedAt DateTime      @updatedAt @map("updated_at")
   deletedAt DateTime?     @map("deleted_at")
-  createdById String?     @map("created_by_id") @db.Uuid
-  updatedById String?     @map("updated_by_id") @db.Uuid
+  createdById String?     @map("created_by_id") @db.Char(36)
+  updatedById String?     @map("updated_by_id") @db.Char(36)
 
   @@unique([slug])
   @@index([status, order])
@@ -164,7 +164,7 @@ model Service {
 }
 
 model ProjectCategory {
-  id        String    @id @default(uuid()) @db.Uuid
+  id        String    @id @default(uuid()) @db.Char(36)
   slug      String
   nameAr    String    @map("name_ar")
   nameEn    String    @map("name_en")
@@ -180,8 +180,8 @@ model ProjectCategory {
 }
 
 model Project {
-  id              String        @id @default(uuid()) @db.Uuid
-  categoryId      String?       @map("category_id") @db.Uuid
+  id              String        @id @default(uuid()) @db.Char(36)
+  categoryId      String?       @map("category_id") @db.Char(36)
   slug            String
   titleAr         String        @map("title_ar")
   titleEn         String        @map("title_en")
@@ -190,8 +190,8 @@ model Project {
   contentAr       String?       @map("content_ar") @db.Text
   contentEn       String?       @map("content_en") @db.Text
   clientName      String?       @map("client_name")
-  technologies    String[]      @default([])
-  coverMediaId    String?       @map("cover_media_id") @db.Uuid
+  technologies    Json          @default("[]")
+  coverMediaId    String?       @map("cover_media_id") @db.Char(36)
   completedAt     DateTime?     @map("completed_at")
   order           Int           @default(0)
   featured        Boolean       @default(false)
@@ -199,8 +199,8 @@ model Project {
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
   deletedAt       DateTime?     @map("deleted_at")
-  createdById     String?       @map("created_by_id") @db.Uuid
-  updatedById     String?       @map("updated_by_id") @db.Uuid
+  createdById     String?       @map("created_by_id") @db.Char(36)
+  updatedById     String?       @map("updated_by_id") @db.Char(36)
 
   category   ProjectCategory? @relation(fields: [categoryId], references: [id])
   coverMedia MediaLibrary?    @relation("ProjectCover", fields: [coverMediaId], references: [id])
@@ -213,7 +213,7 @@ model Project {
 // ─── Blog ────────────────────────────────────────────────────────────────────
 
 model BlogCategory {
-  id        String    @id @default(uuid()) @db.Uuid
+  id        String    @id @default(uuid()) @db.Char(36)
   slug      String
   nameAr    String    @map("name_ar")
   nameEn    String    @map("name_en")
@@ -228,23 +228,23 @@ model BlogCategory {
 }
 
 model BlogPost {
-  id            String        @id @default(uuid()) @db.Uuid
-  categoryId    String?       @map("category_id") @db.Uuid
-  authorId      String?       @map("author_id") @db.Uuid
+  id            String        @id @default(uuid()) @db.Char(36)
+  categoryId    String?       @map("category_id") @db.Char(36)
+  authorId      String?       @map("author_id") @db.Char(36)
   slug          String
   locale        Locale
   title         String
   excerpt       String?       @db.Text
   content       String        @db.Text
-  coverMediaId  String?       @map("cover_media_id") @db.Uuid
+  coverMediaId  String?       @map("cover_media_id") @db.Char(36)
   readingTime   Int?          @map("reading_time")
   publishedAt   DateTime?     @map("published_at")
   status        ContentStatus @default(DRAFT)
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @updatedAt @map("updated_at")
   deletedAt     DateTime?     @map("deleted_at")
-  createdById   String?       @map("created_by_id") @db.Uuid
-  updatedById   String?       @map("updated_by_id") @db.Uuid
+  createdById   String?       @map("created_by_id") @db.Char(36)
+  updatedById   String?       @map("updated_by_id") @db.Char(36)
 
   category   BlogCategory?  @relation(fields: [categoryId], references: [id])
   author     User?          @relation("BlogPostAuthor", fields: [authorId], references: [id])
@@ -258,7 +258,7 @@ model BlogPost {
 // ─── Recruitment ─────────────────────────────────────────────────────────────
 
 model JobCategory {
-  id        String    @id @default(uuid()) @db.Uuid
+  id        String    @id @default(uuid()) @db.Char(36)
   slug      String
   nameAr    String    @map("name_ar")
   nameEn    String    @map("name_en")
@@ -273,8 +273,8 @@ model JobCategory {
 }
 
 model Job {
-  id                  String        @id @default(uuid()) @db.Uuid
-  categoryId          String?       @map("category_id") @db.Uuid
+  id                  String        @id @default(uuid()) @db.Char(36)
+  categoryId          String?       @map("category_id") @db.Char(36)
   slug                String
   titleAr             String        @map("title_ar")
   titleEn             String        @map("title_en")
@@ -287,8 +287,8 @@ model Job {
   createdAt           DateTime      @default(now()) @map("created_at")
   updatedAt           DateTime      @updatedAt @map("updated_at")
   deletedAt           DateTime?     @map("deleted_at")
-  createdById         String?       @map("created_by_id") @db.Uuid
-  updatedById         String?       @map("updated_by_id") @db.Uuid
+  createdById         String?       @map("created_by_id") @db.Char(36)
+  updatedById         String?       @map("updated_by_id") @db.Char(36)
 
   category     JobCategory?  @relation(fields: [categoryId], references: [id])
   applications Application[]
@@ -299,14 +299,14 @@ model Job {
 }
 
 model Application {
-  id              String            @id @default(uuid()) @db.Uuid
-  jobId           String            @map("job_id") @db.Uuid
+  id              String            @id @default(uuid()) @db.Char(36)
+  jobId           String            @map("job_id") @db.Char(36)
   firstName       String            @map("first_name")
   lastName        String            @map("last_name")
   email           String
   phone           String?
   coverLetter     String?           @map("cover_letter") @db.Text
-  resumeMediaId   String?           @map("resume_media_id") @db.Uuid
+  resumeMediaId   String?           @map("resume_media_id") @db.Char(36)
   status          ApplicationStatus @default(NEW)
   source          String?
   notes           String?           @db.Text
@@ -324,14 +324,14 @@ model Application {
 // ─── Marketing content ───────────────────────────────────────────────────────
 
 model TeamMember {
-  id          String        @id @default(uuid()) @db.Uuid
+  id          String        @id @default(uuid()) @db.Char(36)
   nameAr      String        @map("name_ar")
   nameEn      String        @map("name_en")
   roleAr      String        @map("role_ar")
   roleEn      String        @map("role_en")
   bioAr       String?       @map("bio_ar") @db.Text
   bioEn       String?       @map("bio_en") @db.Text
-  mediaId     String?       @map("media_id") @db.Uuid
+  mediaId     String?       @map("media_id") @db.Char(36)
   order       Int           @default(0)
   status      ContentStatus @default(DRAFT)
   createdAt   DateTime      @default(now()) @map("created_at")
@@ -345,11 +345,11 @@ model TeamMember {
 }
 
 model Partner {
-  id        String        @id @default(uuid()) @db.Uuid
+  id        String        @id @default(uuid()) @db.Char(36)
   nameAr    String        @map("name_ar")
   nameEn    String        @map("name_en")
   url       String?
-  mediaId   String?       @map("media_id") @db.Uuid
+  mediaId   String?       @map("media_id") @db.Char(36)
   order     Int           @default(0)
   status    ContentStatus @default(DRAFT)
   createdAt DateTime      @default(now()) @map("created_at")
@@ -362,7 +362,7 @@ model Partner {
 }
 
 model Testimonial {
-  id         String        @id @default(uuid()) @db.Uuid
+  id         String        @id @default(uuid()) @db.Char(36)
   authorAr   String        @map("author_ar")
   authorEn   String        @map("author_en")
   companyAr  String?       @map("company_ar")
@@ -382,14 +382,14 @@ model Testimonial {
 // ─── Engagement & CMS ────────────────────────────────────────────────────────
 
 model Contact {
-  id           String        @id @default(uuid()) @db.Uuid
+  id           String        @id @default(uuid()) @db.Char(36)
   name         String
   email        String
   phone        String?
   subject      String
   message      String        @db.Text
   status       ContactStatus @default(NEW)
-  assignedToId String?       @map("assigned_to_id") @db.Uuid
+  assignedToId String?       @map("assigned_to_id") @db.Char(36)
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
   deletedAt    DateTime?     @map("deleted_at")
@@ -401,7 +401,7 @@ model Contact {
 }
 
 model MediaLibrary {
-  id           String    @id @default(uuid()) @db.Uuid
+  id           String    @id @default(uuid()) @db.Char(36)
   filename     String
   mimeType     String    @map("mime_type")
   size         Int
@@ -412,7 +412,7 @@ model MediaLibrary {
   width        Int?
   height       Int?
   folder       String    @default("general")
-  uploadedById String?   @map("uploaded_by_id") @db.Uuid
+  uploadedById String?   @map("uploaded_by_id") @db.Char(36)
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   deletedAt    DateTime? @map("deleted_at")
@@ -431,7 +431,7 @@ model MediaLibrary {
 }
 
 model WebsiteSection {
-  id        String        @id @default(uuid()) @db.Uuid
+  id        String        @id @default(uuid()) @db.Char(36)
   key       String
   type      String
   content   Json
@@ -446,12 +446,12 @@ model WebsiteSection {
 }
 
 model SeoPage {
-  id              String    @id @default(uuid()) @db.Uuid
+  id              String    @id @default(uuid()) @db.Char(36)
   path            String
   locale          Locale
   title           String
   description     String?   @db.Text
-  ogImageMediaId  String?   @map("og_image_media_id") @db.Uuid
+  ogImageMediaId  String?   @map("og_image_media_id") @db.Char(36)
   canonical       String?
   robots          String?   @default("index,follow")
   structuredData  Json?     @map("structured_data")
@@ -466,7 +466,7 @@ model SeoPage {
 }
 
 model Setting {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        String   @id @default(uuid()) @db.Char(36)
   key       String
   value     Json
   group     String   @default("general")
@@ -480,8 +480,8 @@ model Setting {
 // ─── Platform ────────────────────────────────────────────────────────────────
 
 model Notification {
-  id        String    @id @default(uuid()) @db.Uuid
-  userId    String    @map("user_id") @db.Uuid
+  id        String    @id @default(uuid()) @db.Char(36)
+  userId    String    @map("user_id") @db.Char(36)
   type      String
   title     String
   body      String    @db.Text
@@ -496,8 +496,8 @@ model Notification {
 }
 
 model AuditLog {
-  id         String   @id @default(uuid()) @db.Uuid
-  userId     String?  @map("user_id") @db.Uuid
+  id         String   @id @default(uuid()) @db.Char(36)
+  userId     String?  @map("user_id") @db.Char(36)
   action     String
   entity     String
   entityId   String?  @map("entity_id")

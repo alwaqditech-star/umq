@@ -2,38 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Briefcase,
-  FileText,
-  FolderKanban,
-  LayoutDashboard,
-  Layers,
-  Shield,
-  Users,
-  X,
-} from "lucide-react";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
 import { useUiStore, type Locale } from "@/stores/ui-store";
+import { useAuthStore } from "@/stores/auth-store";
+import { adminNavItems, filterNavByPermissions } from "@/lib/admin/nav-config";
+import { apiMode } from "@/lib/api";
 import { AnimatePresence, motion } from "framer-motion";
-
-const navItems = [
-  { key: "dashboard", href: "/admin", icon: LayoutDashboard },
-  { key: "users", href: "/admin/users", icon: Users },
-  { key: "roles", href: "/admin/roles", icon: Shield },
-  { key: "services", href: "/admin/services", icon: Layers },
-  { key: "projects", href: "/admin/projects", icon: FolderKanban },
-  { key: "blog", href: "/admin/blog", icon: FileText },
-  { key: "jobs", href: "/admin/jobs", icon: Briefcase },
-] as const;
 
 export function Sidebar({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
   const pathname = usePathname();
   const { adminSidebarOpen, setAdminSidebarOpen } = useUiStore();
+  const hasPermission = useAuthStore((s) => s.hasPermission);
+  const user = useAuthStore((s) => s.user);
 
-  const labels: Record<(typeof navItems)[number]["key"], string> = {
+  const navItems = filterNavByPermissions(adminNavItems, hasPermission);
+
+  const labels: Record<string, string> = {
     dashboard: dict.admin.dashboard,
     users: dict.admin.users,
     roles: dict.admin.roles,
@@ -41,6 +29,7 @@ export function Sidebar({ locale }: { locale: Locale }) {
     projects: dict.admin.projects,
     blog: dict.admin.blog,
     jobs: dict.admin.jobs,
+    applications: dict.admin.applications,
   };
 
   const content = (
@@ -61,6 +50,12 @@ export function Sidebar({ locale }: { locale: Locale }) {
           <X className="h-5 w-5" />
         </button>
       </div>
+      {user && (
+        <div className="border-b border-border px-4 py-3 text-xs text-foreground-muted">
+          <p className="font-medium text-foreground">{user.name}</p>
+          <p>{user.role}</p>
+        </div>
+      )}
       <nav className="flex-1 space-y-1 p-3" aria-label="Admin navigation">
         {navItems.map(({ key, href, icon: Icon }) => {
           const path = localePath(locale, href);
@@ -81,13 +76,13 @@ export function Sidebar({ locale }: { locale: Locale }) {
               aria-current={active ? "page" : undefined}
             >
               <Icon className="h-5 w-5 shrink-0" />
-              {labels[key]}
+              {labels[key] ?? key}
             </Link>
           );
         })}
       </nav>
       <div className="border-t border-border p-4 text-xs text-foreground-muted">
-        UMQ Admin · Mock Mode
+        UMQ Admin · {apiMode === "http" ? "API" : "Mock"}
       </div>
     </aside>
   );

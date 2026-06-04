@@ -9,7 +9,7 @@ export const mockProjects: Project[] = [
     summaryAr: "منصة حكومية متعددة الخدمات بأداء عالي.",
     summaryEn: "High-performance multi-service government platform.",
     clientName: "جهة حكومية",
-    technologies: ["Next.js", "NestJS", "PostgreSQL"],
+    technologies: ["Next.js", "NestJS", "MySQL"],
     category: "Government",
     featured: true,
   },

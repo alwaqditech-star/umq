@@ -72,6 +72,7 @@ export interface Application extends BaseEntity {
   email: string;
   status: "new" | "reviewing" | "shortlisted" | "rejected";
   appliedAt: string;
+  jobTitle?: string;
 }
 
 export interface Testimonial extends BaseEntity {

@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, Moon, Sun, Bell } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LogOut, Menu, Moon, Sun, Bell } from "lucide-react";
+import { api } from "@/lib/api";
+import { useAuthStore } from "@/stores/auth-store";
 import { Sidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -20,6 +22,14 @@ export function AdminLayout({
   const dict = getDictionary(locale);
   const pathname = usePathname();
   const { toggleAdminSidebar, toggleTheme, theme } = useUiStore();
+  const clearSession = useAuthStore((s) => s.clearSession);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await api.auth.logout();
+    clearSession();
+    router.push(localePath(locale, "/login"));
+  };
 
   const segment = pathname.split("/").filter(Boolean).pop();
   const titleMap: Record<string, string> = {
@@ -73,6 +83,10 @@ export function AdminLayout({
                 <Sun className="h-5 w-5" />
               )}
             </button>
+            <Button variant="ghost" size="sm" onClick={() => void handleLogout()}>
+              <LogOut className="h-4 w-4" />
+              {dict.admin.logout}
+            </Button>
             <Link href={localePath(locale, "")}>
               <Button variant="ghost" size="sm">
                 {dict.nav.home}

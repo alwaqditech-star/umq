@@ -6,6 +6,8 @@ const MOCK_USER: AuthUser = {
   email: "admin@umq.sa",
   name: "مدير النظام",
   role: "Super Admin",
+  roleSlug: "super-admin",
+  permissions: ["*"],
 };
 
 let session: AuthUser | null = null;
