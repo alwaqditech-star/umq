@@ -35,7 +35,10 @@ jobs:
       DATABASE_URL: mysql://umq:umq_dev_password@localhost:3306/umq_platform
       API_PORT: 4000
       NODE_ENV: test
-      NEXT_PUBLIC_API_URL: http://localhost:4000/api/v1
+      NEXT_PUBLIC_API_URL: /api/v1
+      API_INTERNAL_URL: http://127.0.0.1:4000
+      JWT_SECRET: ci-test-secret
+      WEB_ORIGIN: http://localhost:3000
 
     steps:
       - name: Checkout

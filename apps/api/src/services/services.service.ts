@@ -6,6 +6,19 @@ import { PrismaService } from "../prisma/prisma.service";
 export class ServicesService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private mapStatus(status: ContentStatus): "published" | "draft" | "inactive" {
+    if (status === ContentStatus.PUBLISHED) return "published";
+    if (status === ContentStatus.DRAFT) return "draft";
+    return "inactive";
+  }
+
+  private parseStatus(status?: string): ContentStatus | undefined {
+    if (status === "published") return ContentStatus.PUBLISHED;
+    if (status === "draft") return ContentStatus.DRAFT;
+    if (status === "inactive") return ContentStatus.ARCHIVED;
+    return undefined;
+  }
+
   private mapService(service: {
     id: string;
     slug: string;
@@ -13,7 +26,10 @@ export class ServicesService {
     titleEn: string;
     summaryAr: string | null;
     summaryEn: string | null;
+    contentAr: string | null;
+    contentEn: string | null;
     icon: string | null;
+    order: number;
     featured: boolean;
     status: ContentStatus;
   }) {
@@ -24,14 +40,12 @@ export class ServicesService {
       titleEn: service.titleEn,
       summaryAr: service.summaryAr ?? "",
       summaryEn: service.summaryEn ?? "",
+      contentAr: service.contentAr ?? "",
+      contentEn: service.contentEn ?? "",
       icon: service.icon ?? "layers",
+      order: service.order,
       featured: service.featured,
-      status:
-        service.status === "PUBLISHED"
-          ? ("published" as const)
-          : service.status === "DRAFT"
-            ? ("draft" as const)
-            : ("inactive" as const),
+      status: this.mapStatus(service.status),
     };
   }
 
@@ -65,10 +79,28 @@ export class ServicesService {
     titleEn: string;
     summaryAr?: string;
     summaryEn?: string;
+    contentAr?: string;
+    contentEn?: string;
     icon?: string;
-    status?: ContentStatus;
+    order?: number;
+    featured?: boolean;
+    status?: string;
   }) {
-    const service = await this.prisma.service.create({ data });
+    const service = await this.prisma.service.create({
+      data: {
+        slug: data.slug,
+        titleAr: data.titleAr,
+        titleEn: data.titleEn,
+        summaryAr: data.summaryAr,
+        summaryEn: data.summaryEn,
+        contentAr: data.contentAr,
+        contentEn: data.contentEn,
+        icon: data.icon,
+        order: data.order ?? 0,
+        featured: data.featured ?? false,
+        status: this.parseStatus(data.status) ?? ContentStatus.DRAFT,
+      },
+    });
     return this.mapService(service);
   }
 
@@ -80,11 +112,22 @@ export class ServicesService {
       titleEn: string;
       summaryAr: string;
       summaryEn: string;
+      contentAr: string;
+      contentEn: string;
       icon: string;
-      status: ContentStatus;
+      order: number;
+      featured: boolean;
+      status: string;
     }>,
   ) {
-    const service = await this.prisma.service.update({ where: { id }, data });
+    const { status, ...rest } = data;
+    const service = await this.prisma.service.update({
+      where: { id },
+      data: {
+        ...rest,
+        ...(status !== undefined ? { status: this.parseStatus(status) } : {}),
+      },
+    });
     return this.mapService(service);
   }
 

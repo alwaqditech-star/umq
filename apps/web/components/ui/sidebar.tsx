@@ -8,35 +8,34 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
 import { useUiStore, type Locale } from "@/stores/ui-store";
 import { useAuthStore } from "@/stores/auth-store";
-import { adminNavItems, filterNavByPermissions } from "@/lib/admin/nav-config";
-import { apiMode } from "@/lib/api";
+import type { AdminNavItem } from "@/lib/admin/nav-config";
 import { AnimatePresence, motion } from "framer-motion";
 
-export function Sidebar({ locale }: { locale: Locale }) {
+type SidebarProps = {
+  locale: Locale;
+  homeHref: string;
+  navItems: AdminNavItem[];
+  labels: Record<string, string>;
+  panelLabel: string;
+};
+
+export function Sidebar({
+  locale,
+  homeHref,
+  navItems,
+  labels,
+  panelLabel,
+}: SidebarProps) {
   const dict = getDictionary(locale);
   const pathname = usePathname();
   const { adminSidebarOpen, setAdminSidebarOpen } = useUiStore();
-  const hasPermission = useAuthStore((s) => s.hasPermission);
   const user = useAuthStore((s) => s.user);
-
-  const navItems = filterNavByPermissions(adminNavItems, hasPermission);
-
-  const labels: Record<string, string> = {
-    dashboard: dict.admin.dashboard,
-    users: dict.admin.users,
-    roles: dict.admin.roles,
-    services: dict.admin.services,
-    projects: dict.admin.projects,
-    blog: dict.admin.blog,
-    jobs: dict.admin.jobs,
-    applications: dict.admin.applications,
-  };
 
   const content = (
     <aside className="flex h-full w-64 flex-col border-e border-border bg-surface">
       <div className="flex h-16 items-center justify-between border-b border-border px-4">
         <Link
-          href={localePath(locale, "/admin")}
+          href={localePath(locale, homeHref)}
           className="text-lg font-bold text-gradient"
         >
           {dict.brand}
@@ -56,12 +55,12 @@ export function Sidebar({ locale }: { locale: Locale }) {
           <p>{user.role}</p>
         </div>
       )}
-      <nav className="flex-1 space-y-1 p-3" aria-label="Admin navigation">
+      <nav className="flex-1 space-y-1 p-3" aria-label={panelLabel}>
         {navItems.map(({ key, href, icon: Icon }) => {
           const path = localePath(locale, href);
           const active =
             pathname === path ||
-            (href !== "/admin" && pathname.startsWith(path));
+            (href !== homeHref && pathname.startsWith(path));
           return (
             <Link
               key={key}
@@ -82,7 +81,7 @@ export function Sidebar({ locale }: { locale: Locale }) {
         })}
       </nav>
       <div className="border-t border-border p-4 text-xs text-foreground-muted">
-        UMQ Admin · {apiMode === "http" ? "API" : "Mock"}
+        UMQ · MySQL
       </div>
     </aside>
   );

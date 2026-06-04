@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
+import { ACCESS_COOKIE } from "../../auth/auth-cookies";
 import { IS_PUBLIC_KEY } from "../decorators/public.decorator";
 import type { JwtPayload } from "../../auth/auth.types";
 import type { RequestUser } from "../types/request-user";
@@ -26,17 +27,22 @@ export class JwtAuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<{
       headers: { authorization?: string };
+      cookies?: Record<string, string>;
       user?: RequestUser;
     }>();
 
     const header = request.headers.authorization;
-    if (!header?.startsWith("Bearer ")) {
+    const cookieToken = request.cookies?.[ACCESS_COOKIE];
+    const raw =
+      cookieToken ??
+      (header?.startsWith("Bearer ") ? header.slice(7) : undefined);
+
+    if (!raw) {
       throw new UnauthorizedException("Missing access token");
     }
 
-    const token = header.slice(7);
     try {
-      const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(raw);
       request.user = {
         id: payload.sub,
         email: payload.email,

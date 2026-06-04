@@ -13,6 +13,7 @@ export class UsersService {
     email: string;
     firstName: string;
     lastName: string;
+    roleId: string;
     isActive: boolean;
     lastLoginAt: Date | null;
     role: { name: string; slug: string };
@@ -20,7 +21,10 @@ export class UsersService {
     return {
       id: user.id,
       name: `${user.firstName} ${user.lastName}`.trim(),
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
+      roleId: user.roleId,
       role: user.role.name,
       roleSlug: user.role.slug,
       status: user.isActive ? ("active" as const) : ("inactive" as const),

@@ -18,14 +18,6 @@ enum ContentStatus {
   ARCHIVED
 }
 
-enum ApplicationStatus {
-  NEW
-  REVIEWING
-  SHORTLISTED
-  REJECTED
-  HIRED
-}
-
 enum ContactStatus {
   NEW
   IN_PROGRESS
@@ -61,8 +53,9 @@ model User {
 
   role              Role              @relation(fields: [roleId], references: [id])
   avatarMedia       MediaLibrary?     @relation("UserAvatar", fields: [avatarMediaId], references: [id])
-  refreshTokens     RefreshToken[]
-  blogPosts         BlogPost[]        @relation("BlogPostAuthor")
+  refreshTokens         RefreshToken[]
+  passwordResetTokens   PasswordResetToken[]
+  blogPosts             BlogPost[]        @relation("BlogPostAuthor")
   auditLogs         AuditLog[]
   notifications     Notification[]
   assignedContacts  Contact[]         @relation("ContactAssignee")
@@ -135,6 +128,21 @@ model RefreshToken {
   @@index([userId])
   @@index([tokenHash])
   @@map("refresh_tokens")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid()) @db.Char(36)
+  userId    String    @map("user_id") @db.Char(36)
+  tokenHash String    @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tokenHash])
+  @@index([userId])
+  @@map("password_reset_tokens")
 }
 
 // ─── Services & Portfolio ────────────────────────────────────────────────────
@@ -236,6 +244,7 @@ model BlogPost {
   title         String
   excerpt       String?       @db.Text
   content       String        @db.Text
+  tags          Json          @default("[]")
   coverMediaId  String?       @map("cover_media_id") @db.Char(36)
   readingTime   Int?          @map("reading_time")
   publishedAt   DateTime?     @map("published_at")
@@ -253,72 +262,6 @@ model BlogPost {
   @@unique([slug, locale])
   @@index([status, publishedAt])
   @@map("blog_posts")
-}
-
-// ─── Recruitment ─────────────────────────────────────────────────────────────
-
-model JobCategory {
-  id        String    @id @default(uuid()) @db.Char(36)
-  slug      String
-  nameAr    String    @map("name_ar")
-  nameEn    String    @map("name_en")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
-
-  jobs Job[]
-
-  @@unique([slug])
-  @@map("job_categories")
-}
-
-model Job {
-  id                  String        @id @default(uuid()) @db.Char(36)
-  categoryId          String?       @map("category_id") @db.Char(36)
-  slug                String
-  titleAr             String        @map("title_ar")
-  titleEn             String        @map("title_en")
-  descriptionAr       String        @map("description_ar") @db.Text
-  descriptionEn       String        @map("description_en") @db.Text
-  location            String?
-  employmentType      String?       @map("employment_type")
-  applicationDeadline DateTime?     @map("application_deadline")
-  status              ContentStatus @default(DRAFT)
-  createdAt           DateTime      @default(now()) @map("created_at")
-  updatedAt           DateTime      @updatedAt @map("updated_at")
-  deletedAt           DateTime?     @map("deleted_at")
-  createdById         String?       @map("created_by_id") @db.Char(36)
-  updatedById         String?       @map("updated_by_id") @db.Char(36)
-
-  category     JobCategory?  @relation(fields: [categoryId], references: [id])
-  applications Application[]
-
-  @@unique([slug])
-  @@index([status])
-  @@map("jobs")
-}
-
-model Application {
-  id              String            @id @default(uuid()) @db.Char(36)
-  jobId           String            @map("job_id") @db.Char(36)
-  firstName       String            @map("first_name")
-  lastName        String            @map("last_name")
-  email           String
-  phone           String?
-  coverLetter     String?           @map("cover_letter") @db.Text
-  resumeMediaId   String?           @map("resume_media_id") @db.Char(36)
-  status          ApplicationStatus @default(NEW)
-  source          String?
-  notes           String?           @db.Text
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @updatedAt @map("updated_at")
-  deletedAt       DateTime?         @map("deleted_at")
-
-  job         Job           @relation(fields: [jobId], references: [id])
-  resumeMedia MediaLibrary? @relation("ApplicationResume", fields: [resumeMediaId], references: [id])
-
-  @@index([jobId, status])
-  @@map("applications")
 }
 
 // ─── Marketing content ───────────────────────────────────────────────────────
@@ -421,7 +364,6 @@ model MediaLibrary {
   userAvatars        User[]        @relation("UserAvatar")
   projectCovers      Project[]     @relation("ProjectCover")
   blogCovers         BlogPost[]    @relation("BlogPostCover")
-  applicationResumes Application[] @relation("ApplicationResume")
   teamPhotos         TeamMember[]  @relation("TeamMemberPhoto")
   partnerLogos       Partner[]     @relation("PartnerLogo")
   seoOgImages        SeoPage[]     @relation("SeoOgImage")
@@ -443,6 +385,22 @@ model WebsiteSection {
 
   @@unique([key, locale])
   @@map("website_sections")
+}
+
+/// Homepage section visibility, order, and display labels (CMS)
+model HomeSection {
+  id        String   @id @default(uuid()) @db.Char(36)
+  key       String
+  labelAr   String   @map("label_ar")
+  labelEn   String   @map("label_en")
+  isEnabled Boolean  @default(true) @map("is_enabled")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([key])
+  @@index([isEnabled, sortOrder])
+  @@map("home_sections")
 }
 
 model SeoPage {

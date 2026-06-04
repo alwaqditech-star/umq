@@ -10,12 +10,13 @@
     }
   },
   "scripts": {
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:migrate:deploy": "prisma migrate deploy",
-    "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio",
+    "db:generate": "dotenv -e ../../.env -- prisma generate",
+    "db:migrate": "dotenv -e ../../.env -- prisma migrate dev",
+    "db:migrate:deploy": "dotenv -e ../../.env -- prisma migrate deploy",
+    "db:push": "dotenv -e ../../.env -- prisma db push",
+    "db:seed": "dotenv -e ../../.env -- tsx prisma/seed.ts",
+    "db:migrate-from-omq": "dotenv -e ../../.env -- tsx scripts/migrate-from-omq.ts",
+    "db:studio": "dotenv -e ../../.env -- prisma studio",
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
@@ -29,6 +30,8 @@
   "devDependencies": {
     "@umq/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
+    "dotenv-cli": "^8.0.0",
+    "mysql2": "^3.14.1",
     "prisma": "^6.19.0",
     "tsx": "^4.20.5",
     "typescript": "5.9.2"

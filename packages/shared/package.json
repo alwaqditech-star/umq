@@ -2,15 +2,20 @@
   "name": "@umq/shared",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./src/index.ts",
+      "import": "./dist/index.js",
       "require": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./rbac": {
+      "types": "./dist/rbac.d.ts",
+      "import": "./dist/rbac.js",
+      "require": "./dist/rbac.js",
+      "default": "./dist/rbac.js"
     }
   },
   "scripts": {

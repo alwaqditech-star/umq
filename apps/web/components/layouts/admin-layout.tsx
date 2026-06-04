@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LogOut, Menu, Moon, Sun, Bell } from "lucide-react";
+import { LogOut, Menu, Moon, Sun } from "lucide-react";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/stores/auth-store";
 import { Sidebar } from "@/components/ui/sidebar";
@@ -11,6 +11,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { localePath } from "@/lib/i18n/routes";
 import { useUiStore, type Locale } from "@/stores/ui-store";
 import { PageTransition } from "@/components/motion/page-transition";
+import { adminNavItems, filterNavByPermissions } from "@/lib/admin/nav-config";
 
 export function AdminLayout({
   locale,
@@ -23,6 +24,8 @@ export function AdminLayout({
   const pathname = usePathname();
   const { toggleAdminSidebar, toggleTheme, theme } = useUiStore();
   const clearSession = useAuthStore((s) => s.clearSession);
+  const hasPermission = useAuthStore((s) => s.hasPermission);
+  const user = useAuthStore((s) => s.user);
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -39,14 +42,39 @@ export function AdminLayout({
     services: dict.admin.services,
     projects: dict.admin.projects,
     blog: dict.admin.blog,
-    jobs: dict.admin.jobs,
-    applications: dict.admin.applications,
+    contacts: locale === "ar" ? "رسائل التواصل" : "Contacts",
+    categories: locale === "ar" ? "التصنيفات" : "Categories",
+    testimonials: locale === "ar" ? "آراء العملاء" : "Testimonials",
+    media: locale === "ar" ? "الوسائط" : "Media",
+    audit: locale === "ar" ? "التدقيق" : "Audit",
+    account: locale === "ar" ? "الحساب" : "Account",
   };
   const pageTitle = titleMap[segment ?? "admin"] ?? dict.admin.dashboard;
 
+  const navLabels: Record<string, string> = {
+    dashboard: dict.admin.dashboard,
+    users: dict.admin.users,
+    roles: dict.admin.roles,
+    services: dict.admin.services,
+    projects: dict.admin.projects,
+    blog: dict.admin.blog,
+    contacts: locale === "ar" ? "رسائل التواصل" : "Contacts",
+    account: locale === "ar" ? "الحساب" : "Account",
+    categories: locale === "ar" ? "التصنيفات" : "Categories",
+    testimonials: locale === "ar" ? "آراء العملاء" : "Testimonials",
+    audit: locale === "ar" ? "التدقيق" : "Audit",
+    media: locale === "ar" ? "الوسائط" : "Media",
+  };
+
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar locale={locale} />
+      <Sidebar
+        locale={locale}
+        homeHref="/admin"
+        navItems={filterNavByPermissions(adminNavItems, hasPermission)}
+        labels={navLabels}
+        panelLabel="Admin navigation"
+      />
       <div className="flex min-w-0 flex-1 flex-col lg:ps-64">
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-border bg-surface/90 px-4 backdrop-blur-md sm:px-6">
           <div className="flex items-center gap-3">
@@ -59,18 +87,14 @@ export function AdminLayout({
               <Menu className="h-5 w-5" />
             </button>
             <div>
-              <p className="text-xs text-foreground-muted">{dict.admin.welcome}</p>
+              <p className="text-xs text-foreground-muted">
+                {user?.name ?? dict.admin.welcome}
+                {user?.role ? ` · ${user.role}` : ""}
+              </p>
               <h1 className="text-lg font-semibold text-foreground">{pageTitle}</h1>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="rounded-xl p-2.5 text-foreground-muted hover:bg-accent/10"
-              aria-label="Notifications"
-            >
-              <Bell className="h-5 w-5" />
-            </button>
             <button
               type="button"
               onClick={toggleTheme}

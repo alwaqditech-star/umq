@@ -5,32 +5,43 @@ export function createHttpCrud<T extends BaseEntity>(
   adminPath: string,
   publicPath?: string,
 ): CrudService<T> {
+  const admin = adminPath.startsWith("/") ? adminPath : `/${adminPath}`;
+  const pub = publicPath
+    ? publicPath.startsWith("/")
+      ? publicPath
+      : `/${publicPath}`
+    : undefined;
+
   return {
-    async getAll() {
-      const path = publicPath ?? adminPath;
-      return apiFetch<T[]>(path.startsWith("/") ? path : `/${path}`, {
-        auth: !publicPath,
-      });
+    async getAll(locale?: string) {
+      if (!pub) {
+        return apiFetch<T[]>(admin, { auth: true });
+      }
+      const query = locale ? `?locale=${locale}` : "";
+      return apiFetch<T[]>(`${pub}${query}`);
+    },
+    async listAdmin() {
+      return apiFetch<T[]>(admin, { auth: true });
     },
     async getById(id: string) {
-      return apiFetch<T>(`${adminPath}/${id}`, { auth: true });
+      return apiFetch<T>(`${admin}/${id}`, { auth: true });
     },
-    async create(data: CreateInput<T>) {
-      return apiFetch<T>(adminPath, {
+    async create(data: CreateInput<T> | Record<string, unknown>) {
+      return apiFetch<T>(admin, {
         method: "POST",
         auth: true,
         body: JSON.stringify(data),
       });
     },
-    async update(id: string, data: UpdateInput<T>) {
-      return apiFetch<T>(`${adminPath}/${id}`, {
+    async update(id: string, data: UpdateInput<T> | Record<string, unknown>) {
+      return apiFetch<T>(`${admin}/${id}`, {
         method: "PATCH",
         auth: true,
         body: JSON.stringify(data),
       });
     },
     async delete(id: string) {
-      await apiFetch(`${adminPath}/${id}`, {
+      await apiFetch(`${admin}/${id}`, {
         method: "DELETE",
         auth: true,
       });

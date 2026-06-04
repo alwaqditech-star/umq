@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   hover?: boolean;
+  elevated?: boolean;
   padding?: "none" | "sm" | "md" | "lg";
 }
 
@@ -17,14 +18,18 @@ const paddingMap = {
 };
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ className, hover = false, padding = "md", children, ...props }, ref) => {
+  (
+    { className, hover = false, elevated = false, padding = "md", children, ...props },
+    ref,
+  ) => {
     const inner = (
       <div
         ref={ref}
         className={cn(
-          "rounded-2xl border border-border bg-surface shadow-sm",
+          "rounded-2xl border border-border/90 bg-surface shadow-sm transition-all duration-300",
+          elevated && "card-elevated",
           hover &&
-            "cursor-pointer transition-shadow hover:border-accent/30 hover:shadow-lg",
+            "cursor-pointer hover:border-accent/35 hover:shadow-lg hover:ring-1 hover:ring-accent/15",
           paddingMap[padding],
           className,
         )}
@@ -37,7 +42,10 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     if (!hover) return inner;
 
     return (
-      <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
+      <motion.div
+        whileHover={{ y: -6 }}
+        transition={{ type: "spring", stiffness: 400, damping: 28 }}
+      >
         {inner}
       </motion.div>
     );

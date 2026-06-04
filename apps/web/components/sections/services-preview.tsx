@@ -23,11 +23,14 @@ export function ServicesPreview({
   const featured = services.filter((s) => s.featured).slice(0, 3);
 
   return (
-    <section className="py-20">
+    <section className="py-20 sm:py-24">
       <div className="container-umq">
         <FadeUp className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <h2 className="text-3xl font-bold text-foreground">
+            <span className="section-kicker">
+              {locale === "ar" ? "حلولنا" : "Solutions"}
+            </span>
+            <h2 className="mt-4 text-3xl font-bold text-foreground sm:text-4xl">
               {dict.sections.services}
             </h2>
             <p className="mt-2 max-w-xl text-foreground-muted">
@@ -45,8 +48,8 @@ export function ServicesPreview({
             const Icon = serviceIconMap[service.icon] ?? Layers;
             return (
               <StaggerItem key={service.id}>
-                <Card hover className="h-full">
-                  <div className="mb-4 inline-flex rounded-xl bg-accent/15 p-3 text-accent">
+                <Card hover elevated className="h-full">
+                  <div className="mb-4 inline-flex rounded-xl border border-accent/20 bg-accent/15 p-3 text-accent shadow-sm">
                     <Icon className="h-6 w-6" />
                   </div>
                   <h3 className="text-xl font-semibold">

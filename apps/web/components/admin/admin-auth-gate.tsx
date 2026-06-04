@@ -1,8 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
+import {
+  getPostLoginPathForLocale,
+  isAdminUser,
+  isEditorUser,
+} from "@/lib/admin/rbac";
 import { localePath } from "@/lib/i18n/routes";
 import { useAuthStore } from "@/stores/auth-store";
 import type { Locale } from "@/stores/ui-store";
@@ -15,23 +20,26 @@ export function AdminAuthGate({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const pathname = usePathname();
-  const accessToken = useAuthStore((s) => s.accessToken);
+  const user = useAuthStore((s) => s.user);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     async function verify() {
-      if (!accessToken) {
-        router.replace(localePath(locale, "/login"));
-        return;
-      }
-
       try {
-        const user = await api.auth.getCurrentUser();
-        if (!user) {
+        const current = user ?? (await api.auth.getCurrentUser());
+        if (!current) {
           router.replace(localePath(locale, "/login"));
+          return;
+        }
+        if (isEditorUser(current)) {
+          router.replace(getPostLoginPathForLocale(current.roleSlug, locale));
+          return;
+        }
+        if (!isAdminUser(current)) {
+          useAuthStore.getState().clearSession();
+          router.replace(localePath(locale, "/forbidden"));
           return;
         }
         if (!cancelled) setReady(true);
@@ -44,7 +52,7 @@ export function AdminAuthGate({
     return () => {
       cancelled = true;
     };
-  }, [accessToken, locale, pathname, router]);
+  }, [user, locale, router]);
 
   if (!ready) {
     return (

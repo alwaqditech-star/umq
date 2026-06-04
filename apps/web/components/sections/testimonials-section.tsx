@@ -18,15 +18,20 @@ export function TestimonialsSection({
   const dict = getDictionary(locale);
 
   return (
-    <section className="py-20">
+    <section className="py-20 sm:py-24">
       <div className="container-umq">
         <FadeUp className="text-center">
-          <h2 className="text-3xl font-bold">{dict.sections.testimonials}</h2>
+          <span className="section-kicker">
+            {locale === "ar" ? "ثقة عملائنا" : "Trust"}
+          </span>
+          <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
+            {dict.sections.testimonials}
+          </h2>
         </FadeUp>
         <StaggerList className="mt-12 grid gap-6 md:grid-cols-3">
           {testimonials.map((item) => (
             <StaggerItem key={item.id}>
-              <Card className="h-full">
+              <Card elevated className="h-full border-border/80">
                 <div className="flex gap-1 text-accent">
                   {Array.from({ length: item.rating }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-current" />

@@ -24,7 +24,11 @@ export default function ForgotPasswordPage() {
     const form = new FormData(e.currentTarget);
     try {
       const result = await api.auth.forgotPassword(String(form.get("email")));
-      setMessage(result.message);
+      setMessage(
+        result.resetUrl
+          ? `${result.message}\n\n${locale === "ar" ? "رابط التطوير:" : "Dev link:"} ${result.resetUrl}`
+          : result.message,
+      );
     } catch {
       setError(dict.auth.requestFailed);
     } finally {

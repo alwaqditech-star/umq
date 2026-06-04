@@ -2,45 +2,40 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { getPostLoginPath } from "@umq/shared/rbac";
 import type { AuthUser } from "@/lib/api/interfaces/auth.service";
 
-const ACCESS_COOKIE = "umq_access";
+const ADMIN_HOME_COOKIE = "umq_admin_home";
 
-export function setAccessCookie(token: string | null) {
+function setAdminHomeCookie(roleSlug: string | null) {
   if (typeof document === "undefined") return;
-  if (!token) {
-    document.cookie = `${ACCESS_COOKIE}=; path=/; max-age=0; SameSite=Lax`;
+  if (!roleSlug) {
+    document.cookie = `${ADMIN_HOME_COOKIE}=; path=/; max-age=0; SameSite=Strict`;
     return;
   }
-  document.cookie = `${ACCESS_COOKIE}=${encodeURIComponent(token)}; path=/; max-age=${15 * 60}; SameSite=Lax`;
+  const path = getPostLoginPath(roleSlug);
+  document.cookie = `${ADMIN_HOME_COOKIE}=${encodeURIComponent(path)}; path=/; max-age=${7 * 86400}; SameSite=Strict`;
 }
 
 interface AuthState {
   user: AuthUser | null;
-  accessToken: string | null;
-  refreshToken: string | null;
-  setSession: (payload: {
-    user: AuthUser;
-    accessToken: string;
-    refreshToken: string;
-  }) => void;
+  setUser: (user: AuthUser | null) => void;
   clearSession: () => void;
   hasPermission: (permission: string) => boolean;
 }
 
+/** Tokens live in HttpOnly cookies only — never in localStorage. */
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      accessToken: null,
-      refreshToken: null,
-      setSession: ({ user, accessToken, refreshToken }) => {
-        setAccessCookie(accessToken);
-        set({ user, accessToken, refreshToken });
+      setUser: (user) => {
+        setAdminHomeCookie(user?.roleSlug ?? null);
+        set({ user });
       },
       clearSession: () => {
-        setAccessCookie(null);
-        set({ user: null, accessToken: null, refreshToken: null });
+        setAdminHomeCookie(null);
+        set({ user: null });
       },
       hasPermission: (permission) => {
         const user = get().user;
@@ -51,16 +46,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "umq-auth",
-      partialize: (state) => ({
-        user: state.user,
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
-      }),
-      onRehydrateStorage: () => (state) => {
-        if (state?.accessToken) {
-          setAccessCookie(state.accessToken);
-        }
-      },
+      partialize: (state) => ({ user: state.user }),
     },
   ),
 );

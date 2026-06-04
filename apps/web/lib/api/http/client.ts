@@ -1,9 +1,5 @@
 import { useAuthStore } from "@/stores/auth-store";
 
-const baseUrl =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ??
-  "http://localhost:4000/api/v1";
-
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -14,34 +10,58 @@ export class ApiError extends Error {
   }
 }
 
-async function refreshAccessToken(): Promise<string | null> {
-  const { refreshToken, setSession, clearSession } = useAuthStore.getState();
-  if (!refreshToken) return null;
+function normalizePublicApiPath(): string {
+  const raw = process.env.NEXT_PUBLIC_API_URL?.trim() || "/api/v1";
+  const trimmed = raw.replace(/\/$/, "");
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+  return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+}
 
-  const res = await fetch(`${baseUrl}/auth/refresh`, {
+/** Browser: same-origin absolute URL. Server: direct NestJS URL. */
+export function getBaseUrl(): string {
+  if (typeof window === "undefined") {
+    const internal = (
+      process.env.API_INTERNAL_URL ?? "http://127.0.0.1:4000"
+    ).replace(/\/$/, "");
+    return `${internal}/api/v1`;
+  }
+  const path = normalizePublicApiPath();
+  if (path.startsWith("http")) return path;
+  return new URL(path, window.location.origin).href;
+}
+
+export function isApiConnectionError(error: unknown): boolean {
+  if (!(error instanceof TypeError) || error.message !== "fetch failed") {
+    return false;
+  }
+  const cause = (error as { cause?: { code?: string } }).cause;
+  return (
+    cause?.code === "ECONNREFUSED" ||
+    cause?.code === "ENOTFOUND" ||
+    cause?.code === "ECONNRESET"
+  );
+}
+
+async function refreshSession(): Promise<boolean> {
+  const res = await fetch(`${getBaseUrl()}/auth/refresh`, {
     method: "POST",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refreshToken }),
+    body: JSON.stringify({}),
   });
 
   if (!res.ok) {
-    clearSession();
-    return null;
+    useAuthStore.getState().clearSession();
+    return false;
   }
 
   const data = (await res.json()) as {
-    accessToken: string;
-    refreshToken: string;
     user: import("../interfaces/auth.service").AuthUser;
   };
-
-  setSession({
-    user: data.user,
-    accessToken: data.accessToken,
-    refreshToken: data.refreshToken,
-  });
-
-  return data.accessToken;
+  useAuthStore.getState().setUser(data.user);
+  return true;
 }
 
 export async function apiFetch<T>(
@@ -49,27 +69,28 @@ export async function apiFetch<T>(
   options: RequestInit & { auth?: boolean } = {},
 ): Promise<T> {
   const { auth = false, headers, ...init } = options;
-  const url = path.startsWith("http") ? path : `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
+  const url = path.startsWith("http")
+    ? path
+    : `${getBaseUrl()}${path.startsWith("/") ? path : `/${path}`}`;
 
-  const buildHeaders = (token?: string | null): HeadersInit => ({
+  const buildHeaders = (): HeadersInit => ({
     "Content-Type": "application/json",
     ...(headers as Record<string, string>),
-    ...(auth && token ? { Authorization: `Bearer ${token}` } : {}),
   });
-
-  let token = auth ? useAuthStore.getState().accessToken : null;
 
   let response = await fetch(url, {
     ...init,
-    headers: buildHeaders(token),
+    credentials: "include",
+    headers: buildHeaders(),
   });
 
-  if (auth && response.status === 401 && token) {
-    const newToken = await refreshAccessToken();
-    if (newToken) {
+  if (auth && response.status === 401) {
+    const refreshed = await refreshSession();
+    if (refreshed) {
       response = await fetch(url, {
         ...init,
-        headers: buildHeaders(newToken),
+        credentials: "include",
+        headers: buildHeaders(),
       });
     }
   }
@@ -92,4 +113,26 @@ export async function apiFetch<T>(
   return response.json() as Promise<T>;
 }
 
-export { baseUrl };
+/** Multipart upload (no JSON Content-Type). */
+export async function apiUpload<T>(
+  path: string,
+  formData: FormData,
+): Promise<T> {
+  const url = `${getBaseUrl()}${path.startsWith("/") ? path : `/${path}`}`;
+  const response = await fetch(url, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    const message =
+      typeof body.message === "string"
+        ? body.message
+        : `Upload failed (${response.status})`;
+    throw new ApiError(message, response.status);
+  }
+  return response.json() as Promise<T>;
+}
+
+export { getBaseUrl as baseUrl };

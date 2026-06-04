@@ -1,5 +1,9 @@
 import { PrismaClient, Locale, ContentStatus } from "@prisma/client";
-import { hashPassword } from "@umq/shared";
+import {
+  HOME_SECTION_KEYS,
+  HOME_SECTION_DEFAULTS,
+  hashPassword,
+} from "@umq/shared";
 
 const prisma = new PrismaClient();
 
@@ -16,12 +20,10 @@ const PERMISSIONS = [
   { slug: "projects:manage", name: "Manage Projects", module: "projects", action: "manage" },
   { slug: "blog:read", name: "Read Blog", module: "blog", action: "read" },
   { slug: "blog:manage", name: "Manage Blog", module: "blog", action: "manage" },
-  { slug: "jobs:read", name: "Read Jobs", module: "jobs", action: "read" },
-  { slug: "jobs:manage", name: "Manage Jobs", module: "jobs", action: "manage" },
-  { slug: "applications:read", name: "Read Applications", module: "applications", action: "read" },
-  { slug: "applications:manage", name: "Manage Applications", module: "applications", action: "manage" },
   { slug: "settings:manage", name: "Manage Settings", module: "settings", action: "manage" },
   { slug: "audit:read", name: "Read Audit Logs", module: "audit", action: "read" },
+  { slug: "cms:read", name: "Read CMS", module: "cms", action: "read" },
+  { slug: "cms:manage", name: "Manage CMS", module: "cms", action: "manage" },
 ] as const;
 
 async function assignPermissions(roleId: string, slugs: readonly string[]) {
@@ -44,7 +46,7 @@ async function main() {
     PERMISSIONS.map((p) =>
       prisma.permission.upsert({
         where: { slug: p.slug },
-        update: {},
+        update: { name: p.name, module: p.module, action: p.action },
         create: {
           slug: p.slug,
           name: p.name,
@@ -55,9 +57,11 @@ async function main() {
     ),
   );
 
+  const allSlugs = permissions.map((p) => p.slug);
+
   const superAdminRole = await prisma.role.upsert({
     where: { slug: "super-admin" },
-    update: {},
+    update: { name: "Super Admin", description: "Full platform access" },
     create: {
       name: "Super Admin",
       slug: "super-admin",
@@ -66,87 +70,96 @@ async function main() {
     },
   });
 
-  await assignPermissions(
-    superAdminRole.id,
-    permissions.map((p) => p.slug),
-  );
+  await prisma.rolePermission.deleteMany({ where: { roleId: superAdminRole.id } });
+  await assignPermissions(superAdminRole.id, allSlugs);
 
-  const editorRole = await prisma.role.upsert({
-    where: { slug: "editor" },
-    update: {},
+  const adminRole = await prisma.role.upsert({
+    where: { slug: "admin" },
+    update: { name: "Admin", description: "CMS and content operations" },
     create: {
-      name: "Editor",
-      slug: "editor",
-      description: "Content management",
+      name: "Admin",
+      slug: "admin",
+      description: "CMS and content operations",
       isSystem: true,
     },
   });
 
+  await prisma.rolePermission.deleteMany({ where: { roleId: adminRole.id } });
+  await assignPermissions(adminRole.id, [
+    "services:read",
+    "services:manage",
+    "projects:read",
+    "projects:manage",
+    "blog:read",
+    "blog:manage",
+    "cms:read",
+    "cms:manage",
+    "settings:manage",
+  ]);
+
+  const editorRole = await prisma.role.upsert({
+    where: { slug: "editor" },
+    update: { name: "Editor", description: "Content create and edit" },
+    create: {
+      name: "Editor",
+      slug: "editor",
+      description: "Content create and edit",
+      isSystem: true,
+    },
+  });
+
+  await prisma.rolePermission.deleteMany({ where: { roleId: editorRole.id } });
   await assignPermissions(editorRole.id, [
     "blog:read",
     "blog:manage",
     "projects:read",
     "projects:manage",
-    "services:read",
-    "services:manage",
+    "cms:read",
+    "cms:manage",
   ]);
 
-  const hrRole = await prisma.role.upsert({
-    where: { slug: "hr" },
-    update: {},
-    create: {
-      name: "HR",
-      slug: "hr",
-      description: "Recruitment and applications",
-      isSystem: true,
-    },
-  });
+  const seedPassword = process.env.SEED_ADMIN_PASSWORD ?? "ChangeMe123!";
 
-  await assignPermissions(hrRole.id, [
-    "jobs:read",
-    "jobs:manage",
-    "applications:read",
-    "applications:manage",
-  ]);
-
-  const viewerRole = await prisma.role.upsert({
-    where: { slug: "viewer" },
-    update: {},
-    create: {
-      name: "Viewer",
-      slug: "viewer",
-      description: "Read-only access",
-      isSystem: true,
-    },
-  });
-
-  await assignPermissions(viewerRole.id, [
-    "users:read",
-    "roles:read",
-    "services:read",
-    "projects:read",
-    "blog:read",
-    "jobs:read",
-    "applications:read",
-    "audit:read",
-  ]);
-
-  const adminEmail = "admin@umq.sa";
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "ChangeMe123!";
-
-  await prisma.user.upsert({
-    where: { email: adminEmail },
-    update: { passwordHash: hashPassword(adminPassword) },
-    create: {
-      email: adminEmail,
-      passwordHash: hashPassword(adminPassword),
-      firstName: "System",
-      lastName: "Administrator",
+  const roleUsers = [
+    {
+      email: "admin@umq.sa",
+      firstName: "مدير",
+      lastName: "النظام",
       roleId: superAdminRole.id,
-      locale: Locale.AR,
-      isActive: true,
     },
-  });
+    {
+      email: "operations@umq.sa",
+      firstName: "مسؤول",
+      lastName: "المحتوى",
+      roleId: adminRole.id,
+    },
+    {
+      email: "editor@umq.sa",
+      firstName: "محرر",
+      lastName: "المحتوى",
+      roleId: editorRole.id,
+    },
+  ] as const;
+
+  for (const user of roleUsers) {
+    await prisma.user.upsert({
+      where: { email: user.email },
+      update: {
+        passwordHash: hashPassword(seedPassword),
+        roleId: user.roleId,
+        isActive: true,
+      },
+      create: {
+        email: user.email,
+        passwordHash: hashPassword(seedPassword),
+        firstName: user.firstName,
+        lastName: user.lastName,
+        roleId: user.roleId,
+        locale: Locale.AR,
+        isActive: true,
+      },
+    });
+  }
 
   await prisma.setting.upsert({
     where: { key: "company.name" },
@@ -157,6 +170,91 @@ async function main() {
       value: {
         ar: "عُمْق لتقنية المعلومات",
         en: "UMQ Information Technology",
+      },
+    },
+  });
+
+  await prisma.setting.upsert({
+    where: { key: "contact.info" },
+    update: {},
+    create: {
+      key: "contact.info",
+      group: "contact",
+      value: {
+        email: "info@umq.sa",
+        phone: "+966 11 000 0000",
+        whatsapp: "+966500000000",
+        addressAr: "الرياض، المملكة العربية السعودية",
+        addressEn: "Riyadh, Kingdom of Saudi Arabia",
+        hoursAr: "الأحد – الخميس، 9 ص – 6 م",
+        hoursEn: "Sun – Thu, 9 AM – 6 PM",
+        mapEmbedUrl:
+          "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3624.0!2d46.6753!3d24.7136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjTCsDQyJzQ5LjAiTiA0NsKwNDAnMzEuMSJF!5e0!3m2!1sen!2ssa!4v1",
+      },
+    },
+  });
+
+  for (const key of HOME_SECTION_KEYS) {
+    const d = HOME_SECTION_DEFAULTS[key];
+    await prisma.homeSection.upsert({
+      where: { key },
+      update: { labelAr: d.labelAr, labelEn: d.labelEn },
+      create: {
+        key,
+        labelAr: d.labelAr,
+        labelEn: d.labelEn,
+        sortOrder: d.sortOrder,
+        isEnabled: true,
+      },
+    });
+  }
+
+  await prisma.websiteSection.upsert({
+    where: {
+      key_locale: { key: "contact.faq", locale: Locale.AR },
+    },
+    update: {},
+    create: {
+      key: "contact.faq",
+      type: "faq",
+      locale: Locale.AR,
+      status: ContentStatus.PUBLISHED,
+      content: {
+        items: [
+          {
+            q: "كم يستغرق الرد على استفساري؟",
+            a: "نرد عادةً خلال يوم عمل واحد.",
+          },
+          {
+            q: "هل تقدمون دعماً بعد التسليم؟",
+            a: "نعم، نقدم خطط دعم وتشغيل حسب الاتفاق.",
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.websiteSection.upsert({
+    where: {
+      key_locale: { key: "contact.faq", locale: Locale.EN },
+    },
+    update: {},
+    create: {
+      key: "contact.faq",
+      type: "faq",
+      locale: Locale.EN,
+      status: ContentStatus.PUBLISHED,
+      content: {
+        items: [
+          {
+            q: "How fast do you respond?",
+            a: "We typically reply within one business day.",
+          },
+          {
+            q: "Do you offer post-launch support?",
+            a: "Yes — support and operations plans are available.",
+          },
+        ],
       },
     },
   });
@@ -250,7 +348,7 @@ async function main() {
     },
   });
 
-  const adminUser = await prisma.user.findUnique({ where: { email: adminEmail } });
+  const adminUser = await prisma.user.findUnique({ where: { email: "admin@umq.sa" } });
 
   await prisma.blogPost.upsert({
     where: {
@@ -267,32 +365,6 @@ async function main() {
       authorId: adminUser?.id,
       readingTime: 6,
       publishedAt: new Date(),
-      status: ContentStatus.PUBLISHED,
-    },
-  });
-
-  const jobCategory = await prisma.jobCategory.upsert({
-    where: { slug: "engineering" },
-    update: {},
-    create: {
-      slug: "engineering",
-      nameAr: "هندسة البرمجيات",
-      nameEn: "Engineering",
-    },
-  });
-
-  await prisma.job.upsert({
-    where: { slug: "senior-fullstack-developer" },
-    update: {},
-    create: {
-      slug: "senior-fullstack-developer",
-      titleAr: "مطور Full Stack أول",
-      titleEn: "Senior Full Stack Developer",
-      descriptionAr: "نبحث عن مطور ذو خبرة في Next.js و NestJS.",
-      descriptionEn: "We are hiring an experienced Next.js and NestJS developer.",
-      location: "الرياض",
-      employmentType: "full-time",
-      categoryId: jobCategory.id,
       status: ContentStatus.PUBLISHED,
     },
   });
@@ -315,8 +387,12 @@ async function main() {
   });
 
   console.log("Seed completed.");
-  console.log(`Admin user: ${adminEmail}`);
-  console.log(`Admin password: ${adminPassword}`);
+  console.log("Role users (shared password from SEED_ADMIN_PASSWORD):");
+  for (const user of roleUsers) {
+    const role = await prisma.role.findUnique({ where: { id: user.roleId } });
+    console.log(`  ${role?.slug ?? "?"} → ${user.email}`);
+  }
+  console.log(`Password: ${seedPassword}`);
 }
 
 main()

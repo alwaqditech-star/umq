@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
-import { ContentStatus } from "@prisma/client";
 import { ServicesService } from "./services.service";
 import { RequirePermissions } from "../common/decorators/permissions.decorator";
 
@@ -23,43 +22,21 @@ export class ServicesAdminController {
       titleEn: string;
       summaryAr?: string;
       summaryEn?: string;
+      contentAr?: string;
+      contentEn?: string;
       icon?: string;
+      order?: number;
+      featured?: boolean;
       status?: string;
     },
   ) {
-    return this.servicesService.createAdmin({
-      ...body,
-      status:
-        body.status === "published"
-          ? ContentStatus.PUBLISHED
-          : ContentStatus.DRAFT,
-    });
+    return this.servicesService.createAdmin(body);
   }
 
   @Patch(":id")
   @RequirePermissions("services:manage")
-  update(
-    @Param("id") id: string,
-    @Body()
-    body: Partial<{
-      slug: string;
-      titleAr: string;
-      titleEn: string;
-      summaryAr: string;
-      summaryEn: string;
-      icon: string;
-      status: string;
-    }>,
-  ) {
-    return this.servicesService.updateAdmin(id, {
-      ...body,
-      status:
-        body.status === "published"
-          ? ContentStatus.PUBLISHED
-          : body.status === "draft"
-            ? ContentStatus.DRAFT
-            : undefined,
-    });
+  update(@Param("id") id: string, @Body() body: Record<string, unknown>) {
+    return this.servicesService.updateAdmin(id, body as Parameters<ServicesService["updateAdmin"]>[1]);
   }
 
   @Delete(":id")

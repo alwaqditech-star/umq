@@ -1,20 +1,25 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  Briefcase,
-  ClipboardList,
   FileText,
   FolderKanban,
+  Inbox,
   LayoutDashboard,
   Layers,
+  LayoutTemplate,
   Shield,
+  Star,
+  Tags,
+  UserCircle,
   Users,
+  ScrollText,
+  ImageIcon,
 } from "lucide-react";
 
 export type AdminNavItem = {
   key: string;
   href: string;
   icon: LucideIcon;
-  /** Any of these permissions grants access; empty = all authenticated users */
+  /** Any of these permissions grants access; empty = all authenticated admin users */
   permissions: string[];
 };
 
@@ -51,16 +56,46 @@ export const adminNavItems: AdminNavItem[] = [
     permissions: ["blog:read"],
   },
   {
-    key: "jobs",
-    href: "/admin/jobs",
-    icon: Briefcase,
-    permissions: ["jobs:read"],
+    key: "contacts",
+    href: "/admin/contacts",
+    icon: Inbox,
+    permissions: ["users:read"],
   },
   {
-    key: "applications",
-    href: "/admin/applications",
-    icon: ClipboardList,
-    permissions: ["applications:read"],
+    key: "account",
+    href: "/admin/account",
+    icon: UserCircle,
+    permissions: [],
+  },
+  {
+    key: "categories",
+    href: "/admin/categories",
+    icon: Tags,
+    permissions: ["projects:manage", "blog:manage"],
+  },
+  {
+    key: "websiteSections",
+    href: "/admin/website-sections",
+    icon: LayoutTemplate,
+    permissions: ["cms:manage"],
+  },
+  {
+    key: "testimonials",
+    href: "/admin/testimonials",
+    icon: Star,
+    permissions: ["cms:manage"],
+  },
+  {
+    key: "media",
+    href: "/admin/media",
+    icon: ImageIcon,
+    permissions: ["cms:manage"],
+  },
+  {
+    key: "audit",
+    href: "/admin/audit",
+    icon: ScrollText,
+    permissions: ["audit:read"],
   },
 ];
 

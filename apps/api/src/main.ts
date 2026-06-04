@@ -1,9 +1,25 @@
+import "reflect-metadata";
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import cookieParser from "cookie-parser";
+import helmet from "helmet";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const httpApp = app.getHttpAdapter().getInstance() as {
+    set: (key: string, value: unknown) => void;
+  };
+  httpApp.set("trust proxy", 1);
+  app.use(
+    helmet({
+      contentSecurityPolicy:
+        process.env.NODE_ENV === "production" ? undefined : false,
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+    }),
+  );
+  app.use(cookieParser());
 
   app.enableCors({
     origin: process.env.CORS_ORIGIN?.split(",") ?? [

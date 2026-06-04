@@ -1,8 +1,10 @@
 import { Module } from "@nestjs/common";
 
-import { APP_GUARD } from "@nestjs/core";
+import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 
 import { ConfigModule } from "@nestjs/config";
+
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
 import { AppController } from "./app.controller";
 
@@ -28,11 +30,14 @@ import { ProjectsModule } from "./projects/projects.module";
 
 import { BlogModule } from "./blog/blog.module";
 
-import { JobsModule } from "./jobs/jobs.module";
-
-import { ApplicationsModule } from "./applications/applications.module";
-
 import { ContactsModule } from "./contacts/contacts.module";
+
+import { TestimonialsModule } from "./testimonials/testimonials.module";
+import { CategoriesModule } from "./categories/categories.module";
+import { CmsModule } from "./cms/cms.module";
+import { MediaModule } from "./media/media.module";
+import { SearchModule } from "./search/search.module";
+import { AuditInterceptor } from "./common/interceptors/audit.interceptor";
 
 
 
@@ -47,6 +52,13 @@ import { ContactsModule } from "./contacts/contacts.module";
       envFilePath: [".env", "../../.env"],
 
     }),
+
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60_000,
+        limit: 120,
+      },
+    ]),
 
     PrismaModule,
 
@@ -64,11 +76,17 @@ import { ContactsModule } from "./contacts/contacts.module";
 
     BlogModule,
 
-    JobsModule,
-
-    ApplicationsModule,
-
     ContactsModule,
+
+    TestimonialsModule,
+
+    CategoriesModule,
+
+    CmsModule,
+
+    MediaModule,
+
+    SearchModule,
 
   ],
 
@@ -78,9 +96,13 @@ import { ContactsModule } from "./contacts/contacts.module";
 
     AppService,
 
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+
     { provide: APP_GUARD, useClass: JwtAuthGuard },
 
     { provide: APP_GUARD, useClass: PermissionsGuard },
+
+    { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
 
   ],
 
